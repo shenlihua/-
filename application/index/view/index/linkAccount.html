@@ -1,0 +1,58 @@
+{extend name="base"/}
+{block name="title"}口碑王{/block}
+
+{block name="content"}
+
+<div class="wrap">
+
+    <div class="reg_con">
+        <form action="{:url('linkAccountAction')}" id="form">
+            <div class="reg_1">
+
+                <div class="con">
+                    <span>手机号</span>
+                    <input type="number" name="cellphone" maxlength="11" placeholder="已存在平台的手机号">
+                </div>
+            </div>
+        </form>
+        <div class="btn">
+            <!--<a href="">返回登录</a>-->
+            <button type="button" id="submit" class="w-fr">绑定</button>
+        </div>
+    </div>
+</div>
+
+{/block}
+
+{block name="script"}
+<script>
+    $(function(){
+        $("#province").change(function(){
+            var location_id = $(this).val();
+            var html ='';
+            if ( location_id > 0 ) {
+                $.post("{:url('location')}",{location_id:location_id},function(result){
+
+                    var data = result.data;
+                    for(var i=0;i<data.length;i++){
+                        html +='<option value="'+data[i].id+'">'+data[i].name+'</option>';
+                    }
+                    $('#city').empty().html(html);
+                })
+            } else {
+                $('#city').empty().html('<option value="0">请选择</option>');
+            }
+        })
+
+        $("#submit").click(function(){
+            $.post($("#form").attr('action'),$("#form").serialize(),function(result){
+                alert(result.msg)
+                if(result.code == 1) {
+                    window.location.href= "{:url('Index/index')}"
+                }
+            })
+        })
+    })
+
+</script>
+{/block}

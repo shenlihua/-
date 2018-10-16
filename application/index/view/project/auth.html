@@ -1,0 +1,105 @@
+{extend name="base"/}
+{block name="title"}项目审核{/block}
+{block name="header"}
+<link rel="stylesheet" href="/static/css/webuploader.css"/>
+<script type="text/javascript" src="/static/js/clipboard.js"></script>
+<style>
+  .layui-upload-file{display: none}
+</style>
+{/block}
+{block name="content"}
+<div class="dist_city">
+  <form action="{:url('authAction')}" id="form">
+    <input type="hidden" name="pid" value="{$project_model['id']}"/>
+    <div class="con1" style="padding-top:.2rem;">
+      <div class="con">
+        <div class="num same"><span>订单编号</span>
+          <p class="w-fr"><i class="span">{$project_model['no']}</i> <span class="copy" data-clipboard-text="" id="copy">复制</span></p></div>
+      </div>
+    </div>
+    <div class="con4">
+      <div class="con">
+        <div class="upload same"><span>施工照片</span></div>
+        <div id="uploader-demo">
+
+          <div id="id-input-file">
+            <img src="/static/images/icon_img.png" style="width:1.6rem;height:1.6rem" alt="">
+          </div>
+          <div id="fileList" class="uploader-list">
+            <!--<img src="" width="50" id="img">-->
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="con4">
+      <div class="con">
+        <div class="upload1 same"><span>施工照片</span></div>
+        <textarea name="content" id="" cols="30" rows="10" placeholder="请描述你的项目详情..."></textarea>
+      </div>
+    </div>
+    <button type="button" id="submit">提交审核</button>
+  </form>
+</div>
+{/block}
+
+{block name="script"}
+
+<script src="/static/layui-v2.4.1/layui.js"></script>
+<script src="/static/js/index.js"></script>
+<script>
+    $(function () {
+
+        // 复制
+        var content = $(".num .span").text();
+        $("#copy").attr("data-clipboard-text", content);
+        var clipboard = new ClipboardJS('#copy');
+
+        clipboard.on('success', function (e) {
+            console.log(e);
+            alert("复制成功")
+        });
+
+        clipboard.on('error', function (e) {
+            console.log(e);
+        });
+
+        // 提交
+        $("#submit").click(function () {
+            msgBox.showConfirm('是否提交审核?',function(){
+                $.post($("#form").attr('action'),$("#form").serialize(),function(result){
+                    alert(result.msg)
+                    msgBox.destroy();
+                })
+            })
+        });
+
+
+        layui.use('upload', function(){
+            var upload = layui.upload;
+
+            //执行实例
+            var uploadInst = upload.render({
+                elem: '#id-input-file' //绑定元素
+                ,url: "{:url('Upload/upload')}" //上传接口
+                ,data:{type:'auth_project'}
+                ,acceptMime:'image/*'
+                ,done: function(res){
+                    //上传完毕回调
+                    //获取当前触发上传的元素，一般用于 elem 绑定 class 的情况，注意：此乃 layui 2.1.0 新增
+                    var item = this.item;
+                    var html = '<span>' +
+                        '    <img width="50" height="50" alt="50*50" src="'+res.path+'" />' +
+                        '    <input type="hidden" name="img[]" value="'+res.path+'"/>' +
+                        '</span>' ;
+                    $("#fileList").append(html);
+
+                }
+                ,error: function(){
+                    //请求异常回调
+                    layer.msg('图片上传异常');
+                }
+            });
+        });
+    });
+</script>
+{/block}

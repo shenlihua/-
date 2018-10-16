@@ -1,0 +1,62 @@
+{extend name="base"/}
+{block name="title"}口碑王{/block}
+
+{block name="content"}
+<div class="wrap">
+  <div class="jifen_con">
+
+    <div class="con2">
+      <!--<div class="title clearfix"><span class="span1"></span>积分记录 <a href="{:url('integralMore')}" class="span2">查看更多</a>-->
+        <!--<ul>-->
+          <!--<li>总积分</li>-->
+          <!--<li class="li">本月积分</li>-->
+        <!--</ul>-->
+      <!--</div>-->
+      <div class="list">
+
+    </div>
+
+  </div>
+  <button id="ajax-more" style="padding: .5em;width: 95%;background: #fff;margin: 0 0.5em;">加载更多</button>
+  {include file="common/footer" footer_index="mine"/}
+</div>
+{/block}
+
+{block name="script"}
+<script>
+    var page=1;
+    $(function(){
+        $("#ajax-more").click(function(){
+            getList();
+
+        })
+
+    });
+    getList();
+    function getList() {
+        $.post("{:url('')}",{page:page},function(result){
+            var data = result.data
+            if (data) {
+                var data = data.data;
+
+                if(data && data.length>0) {
+                    var html='';
+                    for(var i=0;i<data.length;i++) {
+                        html += '<div class="div">\n' +
+                            '          <p class="p1">订单编号：'+data[i].no+'</p>\n' +
+                            '          <p class="p1">日期时间：'+data[i].time+'</p>\n' +
+                            '          <em>'+(data[i].gold?'+':'')+data[i].gold+'</em>\n' +
+                            '        </div>'
+                    }
+                    $(".list").append(html);
+                }else{
+                    $("#ajax-more").attr('disabled', true)
+                    $("#ajax-more").text('暂无更多数据')
+                }
+            }
+        }).then(function(){
+            page++;
+        })
+    }
+</script>
+{/block}

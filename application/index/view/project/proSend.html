@@ -1,0 +1,173 @@
+{extend name="base"/}
+{block name="title"}项目审核{/block}
+{block name="header"}
+<script type="text/javascript" src="/static/js/clipboard.js"></script>
+{/block}
+{block name="content"}
+<div class="dist_city" id="project-send">
+<form action="{:url('proSendWorkerAction')}" id="form">
+  <input type="hidden" name="pid" value="{$project_model['id']}">
+  <div class="con1">
+    <h3><span>项目详情</span></h3>
+    <div class="con">
+      <div class="num same"><span>订单编号</span>
+        <p class="w-fr"><i class="span">{$project_model['no']}</i> <span class="copy" data-clipboard-text="" id="copy">复制</span></p></div>
+      <div class="people same">
+        <span>施工人数</span>
+        <i class="span">{$project_model['number']}</i>
+      </div>
+    </div>
+  </div>
+  <div class="con3">
+    <h3><span>添加成员</span></h3>
+    <div class="con">
+      {volist name="project_work['link_work']" id="vo"}
+      <div class="list">
+        <h4>{$vo['content']}（5人） <a href="javascript:;" class="add-worker" data-worker_id="{$vo['id']}">添加></a></h4>
+        <div class="move" id="move{$vo['id']}">
+          {volist name="vo['link_worker']" id="worker"}
+            <span>
+              {:$worker['link_user']['user_name']?$worker['link_user']['user_name']:$worker['link_user']['nickname']}
+              <i></i>
+              <input type="hidden" name="worker[{$vo['id']}][]" value="{$worker['uid']}">
+            </span>
+          {/volist}
+
+        </div>
+      </div>
+      {/volist}
+
+    </div>
+  </div>
+  <button type="button" id="submit">立即派单</button>
+</form>
+</div>
+
+<div class="wrap" style="display: none" id="search-user">
+  <div class="addWorker">
+    <div class="input"><input type="text" placeholder="搜索姓名" id="search_user"></div>
+    <div class="title">人员列表</div>
+    <ul class="people_list">
+      {volist name="handle_users" id="vo"}
+      <li class="show-li" data-id="{$vo['id']}" data-name="{:$vo['user_name']?$vo['user_name']:$vo['nickname']}" data-cellphone="{$vo['cellphone']}">
+        <span></span><img src="{$vo['header']}" alt="">
+        <p class="name">{:$vo['user_name']?$vo['user_name']:$vo['nickname']}-{$vo['cellphone']}</p>
+      </li>
+      {/volist}
+
+    </ul>
+    <div class="sure_add" id="sure_add">确认添加</div>
+  </div>
+</div>
+
+
+
+{/block}
+
+{block name="script"}
+
+<script>
+    $(function () {
+        $("#edit").click(function () {
+            $(".con textarea").focus()
+        })
+        // 复制
+        var content = $(".num .span").text();
+        $("#copy").attr("data-clipboard-text", content);
+        var clipboard = new ClipboardJS('#copy');
+
+        clipboard.on('success', function (e) {
+            console.log(e);
+            alert("复制成功")
+        });
+
+        clipboard.on('error', function (e) {
+            console.log(e);
+        });
+        //弹出员工选择层
+        var work_program=0;
+        var worker=[];
+        var worker_hide = '';
+        const CLASS_HIDE='hide-li';
+        const CLASS_SHOW='show-li';
+        $(".add-worker").click(function(){
+            work_program=$(this).data('worker_id') ;  //所选项目id
+            $("#move"+work_program+" span").each(function(i){
+                worker.push($(this).find('input').val());
+            })
+            console.log(worker)
+            var current_worker = worker.join(',')+','
+            $(".people_list li").show()
+            $(".people_list li").each(function(i){
+                var id = $(this).data('id')+','
+                if(current_worker.indexOf(id)!=-1){
+                    $(this).hide()
+                    worker_hide +=id+',';
+                    $(this).removeClass(CLASS_SHOW).addClass(CLASS_HIDE)
+                }else{
+                    $(this).removeClass(CLASS_HIDE).addClass(CLASS_SHOW)
+                }
+            })
+
+            $("#project-send").hide();
+            $("#search-user").show();
+        })
+        //确认选择用户
+        $("#sure_add").click(function(){
+            var html='';
+            $(".people_list .selected").each(function(i){
+                var id = $(this).data('id')
+                var name=$(this).data('name');
+                var cellphone = $(this).data('cellphone')
+                html +='<span>'+name+' <i></i><input type="hidden" name="worker['+work_program+'][]" value="'+id+'"></span>'
+            })
+            console.log(html)
+            $("#move"+work_program).append(html)
+
+            $(".people_list .selected").removeClass('selected')
+            $("#project-send").show();
+            $("#search-user").hide();
+            //初始化数据
+            worker=[];
+            worker_hide='';
+            work_program=0;
+
+        })
+        //搜索员工
+        $("#search_user").keyup(function(){
+            var keyword = $(this).val()
+
+            // console.log($(".people_list li:contains('"+keyword+"')"));
+            // console.log($('.people_list').filter("li:contains('"+keyword+"')");
+            if(keyword){
+              $(".people_list li:not(:contains('"+keyword+"'))").hide();
+              $(".people_list ."+CLASS_SHOW+":contains('"+keyword+"')").show();
+
+            }else{
+                $(".people_list ."+CLASS_SHOW).show();
+            }
+        })
+
+
+        //选择员工
+        $(".addWorker .people_list li").click(function(){
+            $(this).addClass('selected')
+        });
+
+        // 提交
+        $("#submit").click(function () {
+            msgBox.showConfirm('确定下发任务?',function(){
+                $.post($("#form").attr('action'),$("#form").serialize(),function(result){
+
+                })
+            })
+        });
+
+
+        $("#project-send").on('click','.move i',function(){
+            $(this).parent("span").remove()
+        })
+    });
+</script>
+
+{/block}

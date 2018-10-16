@@ -1,0 +1,122 @@
+<extend name="Base/common"/>
+
+<block name="body">
+
+  <link rel="stylesheet" href="__PUBLIC__/Admin/css/webuploader.css"/>
+  <div class="con_wrap saleadd_wrap">
+    <div class="con_title con_title1">
+      <div class="wrap_width">
+        <div onclick="history.go(-1)" class="return">返回</div>
+      </div>
+    </div>
+    <form name="form" method="post">
+      <div class="wrap_width">
+        <div class="sale_add">
+          <div class="div1">添加资讯</div>
+          <div class="div2">
+            <div class="ovh_con">
+              <div class="span">资讯标题：</div>
+              <div class="div">
+                <input type="text" name="title" placeholder="请输入资讯标题" value="{$info['title']}" />
+              </div>
+            </div>
+            <div class="ovh_con">
+              <div class="span">资讯来源：</div>
+              <div class="div">
+                <input type="text" name="author" placeholder="请输入资讯来源" value="{$info['author']}" />
+              </div>
+            </div>
+            <div class="ovh_con">
+              <div class="span">资讯分类：</div>
+              <div class="div">
+                <input type="text" name="cate_id" placeholder="发现填1 生活填2" value="{$info['cate_id']}" />
+              </div>
+            </div>
+
+            <div class="add1 add2">
+              <div class="span">课程图片：</div>
+              <div class="div">
+                <div id="uploader-demo1">
+                  <div id="filePicker1">上传图片</div>
+                </div>
+                <img class="img" src="{$info['img']|default='__PUBLIC__/Admin/images/icon7.png'}" height="79" width="94" alt="">
+                <input type="hidden" name="img" value="{$info['img']}" />
+              </div>
+            </div>
+            <div class="add" style="margin-top:200px;">
+              <textarea id="editor_id" name="content" style="width:927px;height:330px;resize: none">
+                {$info['content']}
+              </textarea>
+            </div>
+            <input type="hidden" value="{$info['id']}" name="id" />
+            <button type="button" class="submit">提交</button>
+          </div>
+        </div>
+      </div>
+  </div>
+  </form>
+</block>
+<block name="script">
+  <script src="__PUBLIC__/Admin/js/webuploader.js"></script>
+  <script charset="utf-8" src="__PUBLIC__/Admin/js/kindeditor/kindeditor-all-min.js"></script>
+  <script charset="utf-8" src="__PUBLIC__/Admin/js/kindeditor/lang/zh-CN.js"></script>
+  <script language="javascript" type="text/javascript" src="__PUBLIC__/Admin/js/my97datepicker/WdatePicker.js"></script>
+  <script type="text/javascript">
+      $(function(){
+
+          KindEditor.ready(function (K) {
+              window.editor = K.create('#editor_id',{
+                  //下面这行代码就是关键的所在，当失去焦点时执行 this.sync();
+                  afterBlur: function(){
+                      this.sync();
+                  }
+              });
+          });
+
+
+          // 初始化Web Uploader
+          var uploader = WebUploader.create({
+              // 选完文件后，是否自动上传。
+              auto: true,
+              // swf文件路径
+              swf: '__PUBLIC__/Admin/js/Uploader.swf',
+              // 文件接收服务端。
+              server: '{:U("Upload/picture_upload")}',
+              // 选择文件的按钮。可选。
+              // 内部根据当前运行是创建，可能是input元素，也可能是flash.
+              pick: '#filePicker1',
+              // 只允许选择图片文件。
+              accept: {
+                  title: 'Images',
+                  extensions: 'gif,jpg,jpeg,bmp,png',
+                  mimeTypes: 'image/*'
+              },
+              // 可重复选择
+              duplicate: true
+          });
+
+          uploader.on( 'uploadSuccess', function( file ,response) {
+            $(".img").attr('src',response.filename);
+            $("input[name='img']").val(response.filename);
+          });
+
+          $(".submit").click(function(){
+              var url = "{:U('')}";
+              var query = $("form[name='form']").serialize();
+              $.post(url,query,function(result){
+                  if(result.status == 1){
+                      layer.msg(result.info);
+                      setTimeout(function(){
+                          window.location.href = "{:U('index')}";
+                      },1500);
+                  }else{
+                      layer.msg(result.info);
+                  }
+              })
+          })
+      })
+  </script>
+
+
+
+</block>

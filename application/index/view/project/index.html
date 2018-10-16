@@ -1,0 +1,59 @@
+{extend name="base"/}
+{block name="title"}项目管理{/block}
+
+{block name="content"}
+<div class="wrap">
+  <div class="project_con">
+    <ul class="list">
+
+
+    </ul>
+  </div>
+
+  <button id="ajax-more" style="padding: .5em;width: 95%;background: #fff;margin: 0 0.5em;">加载更多</button>
+  {include file="common/footer" footer_index="project"/}
+</div>
+{/block}
+
+{block name="script"}
+<script>
+  var page=1;
+  $(function(){
+    $("#ajax-more").click(function(){
+      getList();
+
+    })
+
+  });
+  getList();
+  function getList() {
+     $.post("{:url('')}",{page:page},function(result){
+         var data = result.data
+         if (data) {
+             var data = data.data;
+
+             if(data && data.length>0) {
+                 var html='';
+                 for(var i=0;i<data.length;i++) {
+                     html += '<li>\n' +
+                         '        <div class="title">'+data[i].title+' <span class="time">'+data[i].create_time+'</span></div>\n' +
+                         '        <div class="con">项目介绍：'+data[i].intro+'</div>\n' +
+                         '        <div class="con1">\n' +
+                         '          <span class="people">'+data[i].number+'</span>\n' +
+                         '          <span class="money">'+data[i].gold+'</span>\n' +
+                         '          <a href="{:url("project/detail")}?id='+data[i].id+'" class="detail">查看详情</a>\n' +
+                         '        </div>\n' +
+                         '      </li>'
+                 }
+                 $(".list").append(html);
+             }else{
+                 $("#ajax-more").attr('disabled', true)
+                 $("#ajax-more").text('暂无更多数据')
+             }
+         }
+     }).then(function(){
+         page++;
+     })
+  }
+</script>
+{/block}

@@ -1,0 +1,33 @@
+{extend name="base"/}
+{block name="title"}推广中心{/block}
+
+{block name="content"}
+<div class="wrap">
+    <div class="extension_con">
+        <div class="con1">
+
+            <div class="tip" style="font-size: 0.35em;">提现金额</div>
+            <div class="input" style="border-bottom: 1px solid;"><input id="money"  style="padding: 0.6em;font-size: large;"></div>
+            <div class="msg" style="font-size: 0.25em; color: #ccc">本次提现金额:{$model['gold']}</div>
+        </div>
+        <button  id="share">提交</button>
+    </div>
+    {include file="common/footer" footer_index="mine"/}
+</div>
+{/block}
+
+{block name="script"}
+<script>
+    $(function(){
+        $("#share").click(function(){
+            var money= $("#money").val()
+            $.post("{:url('moneyAction')}",{money:money},function(result){
+                alert(result.msg)
+                if(result.code==1) {
+                    setTimeout(function(){window.location.reload()},1000)
+                }
+            })
+        })
+    })
+</script>
+{/block}

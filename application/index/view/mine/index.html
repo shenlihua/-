@@ -1,0 +1,49 @@
+{extend name="base"/}
+{block name="title"}口碑王{/block}
+
+{block name="content"}
+<div class="wrap">
+  <div class="me_con">
+    <div class="me_1">
+      <a href="" class="set"></a>
+      <img src="{$model['header']}" class="w-fw img1" alt="">
+      <div class="con">
+        <span class="name">{:$model['user_name']?$model['user_name']:$model['nickname']}</span>
+        <img src="{:$model->getUserPosition($model['tid'])}" class="active img" alt="">
+      </div>
+    </div>
+    <div class="me_2">我的积分 <a href="{:url('integral')}">{$model['gold']}</a></div>
+    <ul class="me_3">
+      <li>
+        <a href="{:url('project/manage')}"><img src="/static/images/me_8.png" class="w-fw" alt="">
+          项目管理</a>
+      </li>
+        {if($model['type']=='city' || $model['type']=='pro')}
+          <li>
+
+          <a href="{:url('users')}"><img src="/static/images/me_9.png" class="w-fw" alt="">
+                员工管理
+              </a>
+          </li>
+        {elseif(empty($model['team_no']))/}
+          <li>
+
+            <a href="{:url('usersReq')}"><img src="/static/images/me_9.png" class="w-fw" alt="">
+              申请团队
+            </a>
+          </li>
+        {/if}
+      <li>
+        <a href="{:url('statistics')}"><img src="/static/images/me_10.png" class="w-fw" alt="">
+          统计中心</a>
+      </li>
+      <li>
+        <a href="{:url('extension')}"><img src="/static/images/me_11.png" class="w-fw" alt="">
+          推广中心</a>
+      </li>
+    </ul>
+  </div>
+
+  {include file="common/footer" footer_index="mine"/}
+</div>
+{/block}

@@ -1,0 +1,257 @@
+
+<div id="sidebar" class="sidebar                  responsive                    ace-save-state">
+    <script type="text/javascript">
+        try{ace.settings.loadState('sidebar')}catch(e){}
+    </script>
+
+
+
+    <ul class="nav nav-list">
+        <li class="" id="index">
+            <a href="{:url('Index/index')}">
+                <i class="menu-icon fa fa-tachometer"></i>
+                <span class="menu-text"> 首页</span>
+            </a>
+
+            <b class="arrow"></b>
+        </li>
+
+        <li class="">
+            <a href="#" class="dropdown-toggle">
+                <i class="menu-icon fa fa-desktop"></i>
+                <span class="menu-text">
+								用户管理
+							</span>
+
+                <b class="arrow fa fa-angle-down"></b>
+            </a>
+
+            <b class="arrow"></b>
+
+            <ul class="submenu">
+
+                <li class="" id="users-index">
+                    <a href="{:url('Users/index')}">
+                        <i class="menu-icon fa fa-caret-right"></i>
+                        用户列表
+                    </a>
+
+                    <b class="arrow"></b>
+                </li>
+                {if(!session('admin_auth_info.is_manage'))}
+                <li class="" id="users-team">
+                    <a href="{:url('Users/team')}">
+                        <i class="menu-icon fa fa-caret-right"></i>
+                        团队人员分配
+                    </a>
+
+                    <b class="arrow"></b>
+                </li>
+                {/if}
+                <li class="" id="users-auth">
+                    <a href="{:url('Users/auth')}">
+                        <i class="menu-icon fa fa-caret-right"></i>
+                        用户申请审核
+                    </a>
+
+                    <b class="arrow"></b>
+                </li>
+            </ul>
+        </li>
+        <li class="">
+            <a href="#" class="dropdown-toggle">
+                <i class="menu-icon fa fa-tachometer"></i>
+                <span class="menu-text"> 项目管理</span>
+                <b class="arrow fa fa-angle-down"></b>
+            </a>
+
+            <ul class="submenu">
+
+
+                <li class="" id="project-index">
+
+                    <a href="{:url('Project/index')}">
+                        <i class="menu-icon fa fa-caret-right"></i>
+                        项目列表
+                    </a>
+
+                    <b class="arrow"></b>
+                </li>
+            </ul>
+        </li>
+
+        <li class="">
+            <a href="#" class="dropdown-toggle">
+                <i class="menu-icon fa fa-tachometer"></i>
+                <span class="menu-text"> 用户提现</span>
+                <b class="arrow fa fa-angle-down"></b>
+            </a>
+
+            <ul class="submenu">
+
+
+                <li class="" id="money-index">
+
+                    <a href="{:url('Money/index')}">
+                        <i class="menu-icon fa fa-caret-right"></i>
+                        提现审核
+                    </a>
+
+                    <b class="arrow"></b>
+                </li>
+            </ul>
+        </li>
+
+        <!--<li class="">-->
+            <!--<a href="#" class="dropdown-toggle">-->
+                <!--<i class="menu-icon fa fa-desktop"></i>-->
+                <!--<span class="menu-text">-->
+                    <!--文章管理-->
+                <!--</span>-->
+
+                <!--<b class="arrow fa fa-angle-down"></b>-->
+            <!--</a>-->
+
+            <!--<b class="arrow"></b>-->
+
+            <!--<ul class="submenu ">-->
+
+                <!--<li class="open">-->
+                    <!--<a href="#" class="dropdown-toggle">-->
+                        <!--<i class="menu-icon fa fa-caret-right"></i>-->
+
+                        <!--文章-->
+                        <!--<b class="arrow fa fa-angle-down"></b>-->
+                    <!--</a>-->
+
+                    <!--<b class="arrow"></b>-->
+
+                    <!--<ul class="submenu">-->
+                        <!--<li class="" id="news-cate">-->
+                            <!--<a href="#">-->
+                                <!--<i class="menu-icon fa fa-leaf green"></i>-->
+                                <!--文章分类-->
+                            <!--</a>-->
+
+                            <!--<b class="arrow"></b>-->
+                        <!--</li>-->
+                        <!--<li class="" id="news-index">-->
+                            <!--<a href="{:url('News/index')}">-->
+                                <!--<i class="menu-icon fa fa-leaf green"></i>-->
+                                <!--文章列表-->
+                            <!--</a>-->
+
+                            <!--<b class="arrow"></b>-->
+                        <!--</li>-->
+
+                    <!--</ul>-->
+                <!--</li>-->
+            <!--</ul>-->
+        <!--</li>-->
+
+        {if(session('admin_auth_info.is_manage'))}
+        <li class="">
+            <a href="#" class="dropdown-toggle">
+                <i class="menu-icon fa fa-desktop"></i>
+                <span class="menu-text">
+								系统设置
+							</span>
+
+                <b class="arrow fa fa-angle-down"></b>
+            </a>
+
+            <b class="arrow"></b>
+
+            <ul class="submenu">
+
+                <li class="">
+                    <a href="#" class="dropdown-toggle">
+                        <i class="menu-icon fa fa-caret-right"></i>
+
+                        服务说明
+                        <b class="arrow fa fa-angle-down"></b>
+                    </a>
+
+                    <b class="arrow"></b>
+
+                    <ul class="submenu nav-hide">
+                        <li class="" id="system-pro-flow">
+                            <a href="{:url('System/warning',['type'=>'proFlow'])}">
+                                项目流程
+                            </a>
+
+                            <b class="arrow"></b>
+                        </li>
+                        <li class="" id="system-pro-security">
+                            <a href="{:url('System/warning',['type'=>'proSecurity'])}">
+                                安全措施
+                            </a>
+
+                            <b class="arrow"></b>
+                        </li>
+                        <li class="" id="system-pro-check">
+                            <a href="{:url('System/warning',['type'=>'proCheck'])}">
+                                QC检查
+                            </a>
+
+                            <b class="arrow"></b>
+                        </li>
+                        <li class="" id="system-pro-maintain">
+                            <a href="{:url('System/warning',['type'=>'proMaintain'])}">
+                                设备维护
+                            </a>
+
+                            <b class="arrow"></b>
+                        </li>
+
+                    </ul>
+                </li>
+
+                <li class="">
+                    <a href="#" class="dropdown-toggle">
+                        <i class="menu-icon fa fa-caret-right"></i>
+
+                        图片管理
+                        <b class="arrow fa fa-angle-down"></b>
+                    </a>
+
+                    <b class="arrow"></b>
+
+                    <ul class="submenu nav-hide">
+                        <li class="" id="system-flow-images">
+                            <a href="{:url('System/flowImages')}">
+                                轮播图管理
+                            </a>
+                            <b class="arrow"></b>
+                        </li>
+                    </ul>
+                </li>
+                <li class="" id="system-location">
+                    <a href="{:url('System/Location')}">
+                        <i class="menu-icon fa fa-caret-right"></i>
+                        城市管理
+                    </a>
+
+                    <b class="arrow"></b>
+                </li>
+            </ul>
+        </li>
+        {/if}
+    </ul><!-- /.nav-list -->
+
+    <div class="sidebar-toggle sidebar-collapse" id="sidebar-collapse">
+        <i id="sidebar-toggle-icon" class="ace-icon fa fa-angle-double-left ace-save-state" data-icon1="ace-icon fa fa-angle-double-left" data-icon2="ace-icon fa fa-angle-double-right"></i>
+    </div>
+    <script>
+        $(function(){
+            var slider_bar = '[slider_bar]';
+            slider_bar = slider_bar?slider_bar:'index';
+
+            $("#"+slider_bar).addClass('active');
+            $("#"+slider_bar).parents('li').addClass('active open');
+        })
+    </script>
+</div>
+
+
+

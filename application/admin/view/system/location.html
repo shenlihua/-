@@ -1,0 +1,85 @@
+{extend name="base" /}
+{block name="title"}系统设置{/block}
+
+<!--导航栏-->
+{block name="slider_bar"}system-location{/block}
+<!--面包屑-->
+{block name="breadcrumb"}
+<i class="ace-icon fa fa-home fa-users"></i>
+<li>系统设置</li>
+<li>地区列表</li>
+{/block}
+
+
+{block name="content"}
+<!-- div.table-responsive -->
+
+<!-- div.dataTables_borderWrap -->
+<div class="dataTables_wrapper form-inline no-footer">
+    <div class="row">
+        <div class="col-xs-6">
+            <a href="{:url('System/locationAdd')}" class="btn btn-sm btn-primary" type="button">添加地区</a>
+        </div>
+        <div class="col-xs-5 text-right">
+
+        </div>
+        <div class="col-xs-1">
+
+        </div>
+    </div>
+    <table id="dynamic-table" class="table table-striped table-bordered table-hover">
+        <thead>
+        <tr>
+
+            <th width="40">序号</th>
+            <th width="120">省份名称</th>
+            <th width="80">状态</th>
+            <th width="200">操作</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        {volist name="list" id="vo"}
+        <tr>
+            <td>{$vo['id']}</td>
+            <td><a href="{:$id>0?'javascript:;':url('',array('id'=>$vo['id']))}">{$vo['name']}</a></td>
+            <td>{$vo::$fields_status[$vo['status']]}</td>
+            <td>
+                {empty name="id"}
+                    <a href="{:url('',array('id'=>$vo['id']))}">查看城市</a>
+                {/empty}
+                <a href="{:url('System/locationAdd',array('id'=>$vo['id']))}">编辑</a>
+                <a href="javascript:;" data-id="{$vo['id']}" class="dataDel">删除</a>
+            </td>
+        </tr>
+        {/volist}
+        </tbody>
+    </table>
+</div>
+{/block}
+
+{block name="script"}
+<script>
+
+    $(function(){
+        $(".dataDel").click(function(){
+            var id = $(this).data('id');
+            var $this = $(this);
+            layer.confirm("是否删除该条数据",function(index){
+                $.post("{:url('System/locationDel')}",{id:id},function(result){
+                    layer.msg(result.msg);
+                    if(result.code==1){
+                        $this.parent().parent().remove()
+                    }
+                })
+            })
+        });
+        $("#submit").click(function(){
+            $.post($("#form").attr('action'),$("#form").serialize(),function(result){
+                //请求异常回调
+                layer.msg(result.msg)
+            })
+        })
+    })
+</script>
+{/block}

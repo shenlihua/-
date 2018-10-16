@@ -1,0 +1,23 @@
+{extend name="base"/}
+{block name="title"}推广中心{/block}
+
+{block name="content"}
+<div class="wrap">
+  <div class="extension_con">
+    <div class="con1">
+      <div class="me_1">
+        <img src="{$model['header']}" class="w-fw img1" alt="">
+        <div class="con">
+          <span class="name">{:$model['user_name']?$model['user_name']:$model['nickname']}</span>
+          <img src="{:$model->getUserPosition($model['tid'])}" class="active img" alt="">
+        </div>
+      </div>
+      <img src="{:\\qrcode\\GenerateQr::getCode($req_code,$model->header,'我的分享码')}" class="ewm" alt="">
+      <p class="p">团队编号: {:$team_model->encodeReqCode($model['team_no'])}</p>
+      <p class="p">项 目 组 : {$model['team_slice_no']}</p>
+    </div>
+    <a href="" id="share">分享</a>
+  </div>
+  {include file="common/footer" footer_index="mine"/}
+</div>
+{/block}

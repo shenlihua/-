@@ -1,0 +1,66 @@
+{extend name="base"/}
+{block name="title"}项目管理{/block}
+
+{block name="content"}
+<div class="wrap">
+  <div class="manage_con">
+    <ul class="type clearfix">
+      <li onclick="window.location.href='{:url("")}'" {:request()->param('state')?'':'class="active"'}><span></span>全部</li>
+      <li onclick="window.location.href='{:url("",["state"=>3])}'"  {:request()->param('state')==3?'class="active"':''} ><span></span>进行中</li>
+      <li onclick="window.location.href='{:url("",["state"=>1])}'"  {:request()->param('state')==1?'class="active"':''} ><span></span>未完成</li>
+      <li onclick="window.location.href='{:url("",["state"=>4])}'"  {:request()->param('state')==4?'class="active"':''} ><span></span>已完成</li>
+    </ul>
+    <ul class="list">
+
+    </ul>
+  </div>
+
+
+  <button id="ajax-more" style="padding: .5em;width: 95%;background: #fff;margin: 0 0.5em;">加载更多</button>
+  {include file="common/footer" footer_index="project"/}
+</div>
+{/block}
+
+{block name="script"}
+<script>
+    var project_status = ['创建项目',''];
+    var page=1;
+    $(function(){
+        $("#ajax-more").click(function(){
+            getList();
+
+        })
+
+    });
+    getList();
+    function getList() {
+        $.post("{:request()->url(true)}",{page:page},function(result){
+            var data = result.data
+            if (data) {
+                var data = data.data;
+
+                if(data && data.length>0) {
+                    var html='';
+                    for(var i=0;i<data.length;i++) {
+                        html += '<li>\n' +
+                            '        <div class="title">'+data[i].title+' <span class="status status1">'+data[i].status_intro+'</span></div>\n' +
+
+                            '        <div class="btn">\n' +
+                            '          <span class="people">'+data[i].number+'</span>\n' +
+                            '          <span class="money">'+data[i].gold+'</span>\n' +
+                            '          <div class="examine"><a href="{:url("project/detail")}?id='+data[i].id+'" class="detail"><span>查看详情</span></a></div>\n' +
+                            '        </div>\n' +
+                            '      </li>'
+                    }
+                    $(".list").append(html);
+                }else{
+                    $("#ajax-more").attr('disabled', true)
+                    $("#ajax-more").text('暂无更多数据')
+                }
+            }
+        }).then(function(){
+            page++;
+        })
+    }
+</script>
+{/block}

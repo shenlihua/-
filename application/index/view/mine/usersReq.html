@@ -1,0 +1,91 @@
+{extend name="base"/}
+{block name="title"}申请加入团队{/block}
+
+{block name="content"}
+
+<div  id="main">
+
+    <div class="reg_con">
+        <div class="reg_1">
+
+            <div class="con">
+                <span>团队编号</span>
+                <input type="text" name="number" maxlength="20" placeholder="团队编号">
+            </div>
+            <div class="con">
+                <span>组编号</span>
+                <input type="number" name="group_number" maxlength="20" placeholder="团队组编号">
+            </div>
+            <div class="dist_city con4 ">
+                <span>申请理由</span>
+
+                <textarea name="" id="" cols="30" rows="10" placeholder="申请理由..."></textarea>
+            </div>
+        </div>
+        {if($state==3)}
+        <div class="btn-success" >已通过审核</div>
+        {elseif($state==2) /}
+        <div class="btn-wait">审核中</div>
+        {elseif($state==1) /}
+        <div id="submit-btn">申请</div>
+        {/if}
+
+    </div>
+
+
+</div>
+<!--提示层-->
+
+
+{include file="common/footer" footer_index="mine"/}
+{/block}
+
+{block name="script"}
+<script>
+    $(function(){
+        $("#submit-btn").click(function(){
+
+            var number = $("input[name='number']").val()
+            var group_number = $("input[name='group_number']").val()
+            group_number = group_number ? group_number : 0;
+
+            var reason = $("textarea").val()
+
+            msgBox.showConfirm('是否提交申请',function(){
+                var is_join=false;
+                var team_id, team_uid,group_no;
+                $.post("{:url('index/searchTeam')}",{number:number,group_number:group_number},function(result){
+                    if(result.code==1){
+                        is_join=true
+                        team_id = result.data.id
+                        team_uid = result.data.uid
+                        group_no = result.data.group_no
+                    }else{
+                        alert(result.msg)
+                    }
+                }).then(function(){
+                    //可以加入
+                    if(is_join) {
+                        $.post("{:url('Mine/usersReqAction')}",{team_id:team_id,group_no:group_no,team_uid:team_uid,reason:reason},function(result){
+                            alert(result.msg)
+                            if(result.code==1){
+                                setTimeout(function(){window.location.reload()},1000)
+                            }
+                        })
+                    }
+                })
+            })
+            // var tops = $(document).scrollTop();//当页面滚动时，把当前距离赋值给页面，这样保持页面滚动条不动
+            // $(document).bind("scroll", function () {
+            //     $(document).scrollTop(tops);
+            // });
+            // $("#tip-mask").show();
+            // $("#tip-pop").show()
+
+
+        })
+
+    })
+
+</script>
+{/block}
