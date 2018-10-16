@@ -123,6 +123,7 @@ class Project extends Common
              'model' => $model,
              'pro_users' => $pro_users,
              'handle_users' => $handle_users,
+             'user_team_model' => model('UserTeam'),
              'user_type' => \app\common\model\UserType::$user_type,
         ]);
     }

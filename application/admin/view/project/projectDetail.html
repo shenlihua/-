@@ -134,10 +134,10 @@
             <div class="widget-body">
                 <div class="widget-main padding-8">
                     {if(session('admin_auth_info.is_manage'))}
-                    <button class="btn btn-inverse add-user" data-type="city" data-team_no="{:$model->decodeReqCode($model['team_no'])}">添加城市经理</button>
+                    <button class="btn btn-inverse add-user" data-type="city" data-team_no="{:$user_team_model->decodeReqCode($model['team_no'])}">添加城市经理</button>
                     {/if}
 
-                    <button class="btn btn-success add-user" data-type="pro" data-team_no="{:$model->decodeReqCode($model['team_no'])}">添加项目经理</button>
+                    <button class="btn btn-success add-user" data-type="pro" data-team_no="{:$user_team_model->decodeReqCode($model['team_no'])}">添加项目经理</button>
 
                     {if($model['is_auth']==1)}
                     <button class="btn btn-primary" id="auth-project" data-id="{$model['id']}">项目完成审核</button>

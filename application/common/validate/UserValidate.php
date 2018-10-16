@@ -67,9 +67,10 @@ class UserValidate extends Validate
     // edit 验证场景定义
     public function sceneWechat()
     {
-        return $this->only(['province','city','tid','user_name','user_card','bank_card','bank_location','cellphone','req_id'])
+        return $this->only(['province','city','user_name','user_card','bank_card','bank_location','cellphone'])
             ->append('user_name', ['require'])
             ->remove('user_name', ['requireWith'])
+
 
             ->append('user_card', ['require'])
             ->append('bank_card', ['require'])

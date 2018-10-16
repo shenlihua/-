@@ -155,7 +155,7 @@ class Project extends BaseModel
     //获取团队编号
     protected function getTeamNoAttr($value)
     {
-        return $value?$this->encodeReqCode($value):'';
+        return $value?model('UserTeam')->encodeReqCode($value):'';
     }
 
 

@@ -14,7 +14,9 @@
       </div>
       <img src="{:\\qrcode\\GenerateQr::getCode($req_code,$model->header,'我的分享码')}" class="ewm" alt="">
       <p class="p">团队编号: {:$team_model->encodeReqCode($model['team_no'])}</p>
-      <p class="p">项 目 组 : {$model['team_slice_no']}</p>
+      {if($model['type']!='city')}
+      <p class="p">项 目 组 : {:$model['type']=='pro'?$model['id']:$model['team_slice_no']}</p>
+      {/if}
     </div>
     <a href="" id="share">分享</a>
   </div>
