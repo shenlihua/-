@@ -1,0 +1,455 @@
+{extend name="base" /}
+
+<!--导航栏-->
+{block name="slider_bar"}project-index{/block}
+<!--面包屑-->
+{block name="breadcrumb"}
+<i class="ace-icon fa fa-home fa-users"></i>
+<li>用户管理</li>
+<li>用户列表</li>
+{/block}
+
+{block name="title"}用户列表{/block}
+
+{block name="content"}
+<style>
+    body .layui-layer-btn .layui-layer-btn1{background:red;color:#fff}
+</style>
+<div class="row">
+    <div class="col-sm-8">
+        <div class="widget-box widget-color-blue2">
+            <div class="widget-header">
+                <h4 class="widget-title lighter smaller">用户基本资料</h4>
+                <div class="widget-toolbar">
+
+                </div>
+            </div>
+
+            <div class="widget-body">
+                <div class="widget-main padding-8">
+                    <div class="widget-body">
+                        <div class="widget-main no-padding">
+                            <table class="table table-striped table-bordered table-hover ace-thumbnails clearfix">
+
+
+                                <tbody>
+                                <tr>
+                                    <td >项目名称:</td>
+
+                                    <th colspan="3">
+                                        {$model['title']}
+                                    </th>
+                                    <td>团队编号</td>
+                                    <td>{$model['team_no']}</td>
+                                </tr>
+
+                                <tr>
+                                    <td width="120">城市经理:</td>
+                                    <td width="250" >
+                                        {volist name="model['link_city_user']" id="vo"}
+                                            {$vo['link_user_info']['user_name']?$vo['link_user_info']['user_name']:$vo['link_user_info']['nickname']}
+                                            -{$vo['link_user_info']['cellphone']}
+                                        <br/>
+                                        {/volist}
+                                    </td>
+
+                                    <td width="140">项目经理:</td>
+                                    <td width="250" >
+                                        {volist name="model['link_pro_user']" id="vo"}
+                                        {$vo['link_user_info']['user_name']?$vo['link_user_info']['user_name']:$vo['link_user_info']['nickname']}
+                                        -{$vo['link_user_info']['cellphone']}
+                                        <br/>
+                                        {/volist}
+                                    </td>
+
+                                    <td width="120">项目城市:</td>
+
+                                    <td width="250" > {:substr($model['province'],7).substr($model['city'],7)}</td>
+                                </tr>
+                                <tr>
+                                    <td>项目地址:</td>
+
+                                    <td colspan="3" >{$model['address']}</td>
+                                    <td>项目状态</td>
+                                    <td>{:$model['is_auth']?$model::$fields_is_auth[$model['is_auth']]:$model::$fields_status[$model['status']]}</td>
+                                </tr>
+                                <tr>
+                                    <td>项目人数:</td>
+                                    <td>{$model['number']}</td>
+                                    <td>项目金额:</td>
+                                    <td>{$model['gold']}</td>
+                                    <td></td>
+                                    <td> </td>
+                                </tr>
+                                <tr>
+                                    <td>简介:</td>
+                                    <td colspan="5"  style="height:70px;text-align: left">
+                                        <div>
+                                            {:str_replace("\\r\\n","<br/>",$model['intro'])}
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>备注:</td>
+                                    <td colspan="5"  style="height:60px;">
+                                        {:str_replace("\\r\\n","<br/>",$model['remark'])}
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td>创建时间:</td>
+                                    <td>{$model['create_time']}</td>
+                                    <td>更新时间:</td>
+                                    <td>{$model['update_time']}</td>
+                                    <td>完成时间:</td>
+                                    <td>{:$model['complete_time']?date('Y-m-d H:i:s',$model['complete_time']):''}</td>
+                                </tr>
+
+                                <tr>
+                                    <td>开始时间:</td>
+                                    <td>{:$model['act_time']?date('Y-m-d H:i:s',$model['act_time']):''}</td>
+                                    <td>提交审核时间:</td>
+                                    <td>{:$model['submit_auth_time']?date('Y-m-d H:i:s',$model['submit_auth_time']):''}</td>
+                                    <td>审核时间:</td>
+                                    <td>{:$model['auth_time']?date('Y-m-d H:i:s',$model['auth_time']):''}</td>
+                                </tr>
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-4">
+        <div class="widget-box widget-color-green2">
+            <div class="widget-header">
+                <h4 class="widget-title lighter smaller">
+                    可选操作
+                </h4>
+            </div>
+
+            <div class="widget-body">
+                <div class="widget-main padding-8">
+                    {if(session('admin_auth_info.is_manage'))}
+                    <button class="btn btn-inverse add-user" data-type="city" data-team_no="{:$model->decodeReqCode($model['team_no'])}">添加城市经理</button>
+                    {/if}
+
+                    <button class="btn btn-success add-user" data-type="pro" data-team_no="{:$model->decodeReqCode($model['team_no'])}">添加项目经理</button>
+
+                    {if($model['is_auth']==1)}
+                    <button class="btn btn-primary" id="auth-project" data-id="{$model['id']}">项目完成审核</button>
+                    {/if}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-4">
+        <div class="widget-box widget-color-green2">
+            <div class="widget-header">
+                <h4 class="widget-title lighter smaller">
+                    地图
+                </h4>
+            </div>
+
+            <div class="widget-body">
+                <div class="widget-main padding-8" id="allmap" style="height: 250px">
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+</div>
+
+<div class="row">
+    <!--项目审核信息-->
+    <div class="col-sm-5">
+        <div class="widget-box widget-color-blue2">
+            <div class="widget-header">
+                <h4 class="widget-title lighter smaller">
+                    项目完成信息
+                </h4>
+            </div>
+            <div class="widget-body">
+                <div class="widget-main no-padding">
+                    <table class="table table-striped table-bordered table-hover ace-thumbnails clearfix">
+                        <tbody>
+                        <tr>
+                            <td width="80">提交时间</td>
+                            <td>{$model['link_auth_detail']['create_time']}</td>
+                        </tr>
+                        <tr>
+                            <td>描述</td>
+                            <td height="80">{$model['link_auth_detail']['content']}</td>
+                        </tr>
+                        <tr>
+                            <td>图片</td>
+                            <td height="120" id="layer-photos-demo">
+                                {:preg_replace('/([^,]+)/','<img src="$1" width="150" height="150"/>',$model['link_auth_detail']['img'])}
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--项目人员分配-->
+    <div class="col-sm-4">
+        <form id="worker-form" action="{:url('workerAction')}">
+            <input type="hidden" name="pid" value="{$model['id']}"/>
+            <div class="widget-box widget-color-blue2">
+                <div class="widget-header">
+                    <h4 class="widget-title lighter smaller">
+                        施工信息
+                    </h4>
+                    <div class="widget-toolbar">
+                        <a href="#"  id="worker-save">
+                            <span class="label label-warning group-edit">保存</span>
+                        </a>
+                    </div>
+                </div>
+                <div class="widget-body">
+                    <div class="widget-main no-padding">
+                        <div  class="accordion-style1 panel-group accordion-style2">
+                            {volist name="model['link_work']" id="vo"}
+
+                            <!--//员工信息-->
+                            {php}
+                            $worker = array_column($vo['link_worker']->toArray(),'uid');
+                            {/php}
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <h4 class="panel-title">
+                                        <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="true">
+                                            <i class="bigger-110 ace-icon fa fa-angle-down" data-icon-hide="ace-icon fa fa-angle-down" data-icon-show="ace-icon fa fa-angle-right"></i>
+                                            &nbsp;{$vo['content']}
+                                        </a>
+                                    </h4>
+                                </div>
+
+                                <div class="panel-collapse collapse in" id="collapseThree" aria-expanded="true" style="">
+                                    <div class="panel-body">
+                                        {volist name="handle_users" id="users"}
+                                        <label>
+                                            <input name="w_uid[{$vo['id']}][]" type="checkbox" value="{$users['id']}"  {:in_array($users['id'],$worker) ? 'checked' : ''} class="ace">
+                                            <span class="lbl"> {:$users['user_name']?$users['user_name']:$users['nickname']}</span>
+                                        </label>
+                                        {/volist}
+
+                                    </div>
+                                </div>
+                            </div>
+                            {/volist}
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+
+        </form>
+    </div>
+    <!--项目流程-->
+    <div class="col-sm-3">
+        <div class="widget-box widget-color-blue2">
+            <div class="widget-header">
+                <h4 class="widget-title lighter smaller">
+                    项目实施流程
+                </h4>
+            </div>
+            <div class="widget-body">
+                <div class="widget-main no-padding">
+                    <table class="table table-striped table-bordered table-hover ace-thumbnails clearfix">
+                        <thead>
+                        <tr>
+                            <th>时间</th>
+                            <th>说明</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {volist name="model['link_pro_flow']" id="vo"}
+                        <tr>
+                            <td>{$vo['create_time']}</td>
+                            <td>{$vo['intro']}</td>
+                        </tr>
+                        {/volist}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row no-padding no-margin" id="show-auth-project" style="display: none">
+    <div class="col-xs-9">
+        <form action="{:url('project/authAction')}" class="form-horizontal" id="auth-form">
+            <input type="hidden" name="id" value="{:$model['id']}"/>
+            <div class="form-group">
+                <label class="col-sm-3 control-label no-padding-right">内容</label>
+
+                <div class="col-sm-9">
+                        <textarea class="form-control" id placeholder="说点什么...." name="content"></textarea>
+                </div>
+
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="row no-padding no-margin" id="show-choose-user">
+    <div class="col-xs-9">
+        <form action="{:url('project/delegate')}" class="form-horizontal" id="delegate-form">
+            <input type="hidden" name="pid" value="{:$model['id']}"/>
+            <input type="hidden" name="type" value=""/>
+            <div class="form-group">
+                <label class="col-sm-3 control-label no-padding-right">选择用户</label>
+
+                <div class="col-sm-3">
+                    <div class="pos-rel">
+                        {:widget('Page/chooseUser',['after_select_param'=>'city'])}
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+</div>
+{/block}
+
+{block name='script'}
+
+<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak={:widget('Page/mapAK')}"></script>
+<script>
+    var lat={$model['coordinate']['lat']?$model['coordinate']['lat']:0};
+    var lng={$model['coordinate']['lng']?$model['coordinate']['lng']:0};
+    // 百度地图API功能
+    var map = new BMap.Map("allmap");    // 创建Map实例
+    var point = new BMap.Point(114.073751,22.562341);
+    map.centerAndZoom(point, 11);  // 初始化地图,设置中心点坐标和地图级别
+    map.enableScrollWheelZoom(true);     //开启鼠标滚轮缩放
+    //移动指定位置
+    setTimeout(function(){
+        if(lng && lat){
+            var point = new BMap.Point(lng, lat);
+            var marker = new BMap.Marker(point);
+            map.addOverlay(marker);
+            map.centerAndZoom(point, 11);
+            map.setZoom(16);
+        }
+    }, 1000);
+    $(function(){
+        $("#worker-save").click(function(){
+            layer.confirm("确定调整任务人员分配?",function(){
+                $.post($("#worker-form").attr('action'),$("#worker-form").serialize(),function(result){
+                    layer.msg(result.msg)
+                })
+            })
+        });
+
+        //图片-调用示例
+        layer.photos({
+            photos: '#layer-photos-demo'
+            ,anim: 5 //0-6的选择，指定弹出图片动画类型，默认随机（请注意，3.0之前的版本用shift参数）
+        });
+
+        //项目审核
+        $("#auth-project").click(function(){
+
+                layer.open({
+                    type: 1
+                    ,title:'项目审核'
+                    ,btn: ['确定','拒绝', '取消']
+                    ,content: $('#show-auth-project ') //这里content是一个普通的String
+                    ,area: ['400px', '180px']
+                    ,yes: function(index, layero){
+                        //do something
+
+                        authSubmit(2)
+                        // layer.close(index); //如果设定了yes回调，需进行手工关闭
+                    }
+                    ,btn2: function(index, layero){
+                        //按钮【按钮二】的回调
+                        authSubmit(3)
+                        return false //开启该代码可禁止点击该按钮关闭
+                    }
+
+                })
+        })
+
+
+
+        //隐藏弹出层
+        $("#show-choose-user").hide();
+
+
+
+        $(".add-user").click(function(){
+            var $this = $(this);
+            var type= $this.data('type');
+            var team_no = $this.data('team_no');
+            var title='';
+            if(type=='city') {
+                title = '城市经理'
+            }else if(type=='pro') {
+                title ='项目经理'
+            }
+            $("#delegate-form input[name='type']").val(type)
+            layer.open({
+                type: 1
+                ,title:'请选择'+title
+                ,btn: ['确定', '取消']
+                ,content: $('#show-choose-user') //这里content是一个普通的String
+                ,area: ['500px', '350px']
+                ,yes: function(index, layero){
+                    //do something
+                    $.post($("#delegate-form").attr('action'),$("#delegate-form").serialize(),function(result){
+                        layer.msg(result.msg);
+                        if(result.code==1) {
+                            window.location.reload()
+                        }
+                    })
+                    // layer.close(index); //如果设定了yes回调，需进行手工关闭
+                }
+                ,success: function(layero, index){
+                    //console.log(layero, index);
+                    getChooseUser(type,team_no)
+                }
+                ,end:function(){
+                    clearUser()
+                }
+            })
+        })
+
+    })
+
+    //提交审核
+    function authSubmit(is_auth) {
+        var obj={}
+        var content = $("#auth-form").find("textarea[name='content']").val();
+        var id = $("#auth-form input[name='id']").val();
+        obj.is_auth = is_auth
+        obj.content = content
+        obj.id =id
+        $.post($("#auth-form").attr('action'),obj,function(result){
+            layer.msg(result.msg);
+            if(result.code==1) {
+                window.location.reload()
+            }
+        })
+    }
+
+</script>
+{/block}
+
+
+

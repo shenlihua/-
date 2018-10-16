@@ -1,0 +1,48 @@
+{__NOLAYOUT__}
+
+<select id="chosen-select-user-{$name}" class="form-control" name="{$name}" data-placeholder="请选择用户">
+    <option value="">  </option>
+    {volist name="list" id="vo"}
+        <option value="{$vo['id']}" {:$vo['id']==$user_id?'selected':''}> {:$vo['cellphone'].'-'.($vo['user_name']?$vo['user_name']:$vo['nickname'])} </option>
+    {/volist}
+</select>
+
+
+
+
+<link rel="stylesheet" href="/static/Ace/css/chosen.min.css" />
+
+
+<script src="/static/Ace/js/chosen.jquery.min.js"></script>
+
+
+<script>
+    (function ($) {
+
+        //////////////////
+        $('#chosen-select-user-{$name}').chosen({allow_single_deselect:true});
+
+    })(jQuery);
+
+    //获取选中的用户信息
+    function getChooseUser(type,team_no) {
+        $.post("{:url('index/getChooseUsers')}", {type: type,team_no:team_no}, function (result) {
+            var html = '<option value=""></option>';
+
+            var data = result.data;
+            for (var i = 0; i < data.length; i++) {
+                    html += '<option value="' + data[i].id + '" >' + data[i].cellphone+'-'+(data[i].user_name?data[i].user_name:data[i].nickname) + '</option>'
+            }
+            $('#chosen-select-user-{$name}').html(html)
+        }).then(function(){
+            $('#chosen-select-user-{$name}').trigger('chosen:updated')
+        })
+    }
+
+    //清空数据
+    function clearUser() {
+        var html = '<option value=""></option>';
+        $('#chosen-select-user-{$name}').html(html)
+        $('#chosen-select-user-{$name}').trigger('chosen:updated')
+    }
+</script>

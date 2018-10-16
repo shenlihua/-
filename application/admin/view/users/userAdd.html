@@ -1,0 +1,205 @@
+{extend name="base" /}
+{block name="title"}用户列表{/block}
+
+<!--导航栏-->
+{block name="slider_bar"}users-index{/block}
+<!--面包屑-->
+{block name="breadcrumb"}
+<i class="ace-icon fa fa-home fa-users"></i>
+<li>用户管理</li>
+<li>用户列表</li>
+{/block}
+
+
+{block name="content"}
+<form class="form-horizontal" role="form" id="form" action="{:url('userAddAction')}">
+    <input type="hidden" name="id" value="{$user_info['id']}">
+
+    <div class="row">
+        <div class="page-header">
+            <button class="btn btn-white btn-info btn-bold" type="button" id="submit">
+                <i class="ace-icon fa fa-floppy-o bigger-120 blue"></i>
+                保存
+            </button>
+        </div>
+
+        <div class="col-xs-6">
+            <!-- PAGE CONTENT BEGINS -->
+
+
+                <div class="form-group">
+                    <label class="col-sm-3 control-label no-padding-right" >用户类型</label>
+
+                    <div class="col-sm-9">
+                        {:widget('Page/chooseUserType',['type'=>$user_info['tid']])}
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-sm-3 control-label no-padding-right" >地区</label>
+
+                    <div class="col-sm-9">
+                        {:widget('Page/chooseLocation',['city_id'=>(int)$user_info['city'],'province_id'=>(int)$user_info['province']])}
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-sm-3 control-label no-padding-right" >手机号码</label>
+
+                    <div class="col-sm-9">
+                        <input type="text"  placeholder="手机号码" class="col-xs-10 col-sm-5" name="cellphone" value="{$user_info['cellphone']}" maxlength="11"/>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-sm-3 control-label no-padding-right" >性别</label>
+
+                    <div class="col-sm-9">
+                        <div class="radio inline">
+                            <label>
+                                <input name="sex" type="radio" class="ace" value="1" {:empty($user_info)?'checked':($user_info['sex']==1?'checked':'')}>
+                                <span class="lbl"> 男</span>
+                            </label>
+                        </div>
+                        <div class="radio inline">
+                            <label>
+                                <input name="sex" type="radio" class="ace" value="2" {:$user_info['status']==2?'checked':''}>
+                                <span class="lbl"> 女</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label no-padding-right" >积分</label>
+
+                    <div class="col-sm-9">
+                        <input type="number"  placeholder="0" class="col-xs-10 col-sm-5" name="gold" value="{$user_info['gold']}" />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-sm-3 control-label no-padding-right" >用户状态</label>
+
+                    <div class="col-sm-9">
+                        <div class="radio inline">
+                            <label>
+                                <input name="status" type="radio" class="ace" value="1" {:empty($user_info)?'checked':($user_info['status']==1?'checked':'')}>
+                                <span class="lbl"> 正常</span>
+                            </label>
+                        </div>
+                        <div class="radio inline">
+                            <label>
+                                <input name="status" type="radio" class="ace" value="2" {:$user_info['status']==2?'checked':''}>
+                                <span class="lbl"> 禁用</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-sm-3 control-label no-padding-right" >用户头像</label>
+                    <div class="col-sm-3">
+                        <button type="button" class="layui-btn" id="id-input-file">
+                            <i class="layui-icon">&#xe67c;</i>上传图片
+                        </button>
+                    </div>
+                    <div class="col-sm-6">
+                        <span class="profile-picture">
+                              <img width="150" height="150" alt="封面图" src="{:generate_img_path($user_info['header'])}">
+                              <input type="hidden" name="header" value="{$user_info['header']}"/>
+                          </span>
+                    </div>
+                </div>
+
+
+
+
+        </div><!-- /.col -->
+
+        <div class="col-xs-6">
+
+            <div class="form-group">
+                <label class="col-sm-3 control-label no-padding-right">登录密码</label>
+
+                <div class="col-sm-9">
+                    <input type="password"  placeholder="登录密码" class="col-xs-10 col-sm-5" name="password"  maxlength="50"/>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-3 control-label no-padding-right" >昵称</label>
+
+                <div class="col-sm-9">
+                    <input type="text"  placeholder="昵称" class="col-xs-10 col-sm-5" name="nickname" value="{$user_info['nickname']}" maxlength="20"/>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-3 control-label no-padding-right" >用户邮箱</label>
+
+                <div class="col-sm-9">
+                    <input type="text"  placeholder="用户邮箱" class="col-xs-10 col-sm-5" name="email" value="{$user_info['email']}" maxlength="100"/>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-3 control-label no-padding-right" >用户名</label>
+
+                <div class="col-sm-9">
+                    <input type="text"  placeholder="用户名" class="col-xs-10 col-sm-5" name="user_name" value="{$user_info['user_name']}" maxlength="50"/>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-3 control-label no-padding-right" >银行卡号</label>
+
+                <div class="col-sm-9">
+                    <input type="text"  placeholder="银行卡号" class="col-xs-10 col-sm-5" name="bank_card" value="{$user_info['bank_card']}" maxlength="50"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label no-padding-right" >开户行</label>
+
+                <div class="col-sm-9">
+                    <input type="text"  placeholder="开户行" class="col-xs-10 col-sm-5" name="bank_location" value="{$user_info['bank_location']}" maxlength="100"/>
+                </div>
+            </div>
+        </div>
+
+    </div><!-- /.row -->
+</form>
+
+    <script>
+        layui.use('upload', function(){
+            var upload = layui.upload;
+
+            //执行实例
+            var uploadInst = upload.render({
+                elem: '#id-input-file' //绑定元素
+                ,url: "{:url('Upload/upload')}" //上传接口
+                ,data:{type:'header'}
+                ,acceptMime:'image/*'
+                ,done: function(res){
+                    //上传完毕回调
+                    //获取当前触发上传的元素，一般用于 elem 绑定 class 的情况，注意：此乃 layui 2.1.0 新增
+                    var item = this.item;
+                    $(item).parent().next().find('img').attr('src',res.path)
+                    $(item).parent().next().find('input[name="header"]').val(res.path)
+
+                }
+                ,error: function(){
+                    //请求异常回调
+                    layer.msg('图片上传异常');
+                }
+            });
+        });
+        $(function(){
+            $("#submit").click(function(){
+                $.post($("#form").attr('action'),$("#form").serialize(),function(result){
+                    //请求异常回调
+                    layer.msg(result.msg)
+                })
+            })
+        })
+    </script>
+{/block}

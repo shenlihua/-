@@ -1,0 +1,74 @@
+{extend name="base"/}
+{block name="title"}项目经理{/block}
+
+{block name="content"}
+<div class="people_con">
+  <ul class="people_type">
+    {volist name="staff_type" id="vo"}
+      <li onclick="window.location.href='{:url('',['id'=>$vo['id']])}'" {:$vo['id']==request()->param('id')?'class="active"':''}><span></span>{$vo['name']}</li>
+    {/volist}
+  </ul>
+  <div class="people_input">
+    <div class="input">
+      <form action="{:url('')}" method="get">
+        <input type="text" name="keyword" value="{$keyword}" placeholder="输入你要找的人员姓名">
+      </form>
+    </div>
+  </div>
+    <ul  class="people_list">
+
+
+    </ul >
+    <a id="ajax-more">加载更多</a>
+
+
+
+  {include file="common/footer" footer_index="mine"/}
+</div>
+
+{/block}
+
+{block name="script"}
+<script>
+    var page=1;
+    var is_more_data = true;
+    $(function(){
+        $("#ajax-more").click(function(){
+            getList();
+
+        })
+
+    });
+    getList();
+    function getList() {
+        if(is_more_data===true){
+            $.post("{:request()->url()}",{page:page},function(result){
+                var data = result.data
+                if (data) {
+                    var data = data.data;
+
+                    if(data && data.length>0) {
+                        var html='';
+                        for(var i=0;i<data.length;i++) {
+                            html += '<li>\n' +
+                                '        <div class="div">\n' +
+                                '          <img src="'+data[i].header+'" alt="">\n' +
+                                '          <p class="p">'+(data[i].user_name?data[i].user_name:data[i].nickname)+' <span>'+(data[i].user_type?data[i].user_type.name:'')+' </span></p>\n' +
+                                '        </div>\n' +
+                                '        <div class="div1"><span class="span">总项目：0单</span><span class="span1">进行中：0单</span></div>\n' +
+                                '        <a href="tel:'+data[i].cellphone+'" class="tel"><img src="/static/images/people3.png" alt=""></a>\n' +
+                                '      </li>'
+                        }
+                        $(".people_list").append(html);
+                    }else{
+                        is_more_data =false;
+                        $("#ajax-more").text('暂无更多数据')
+                    }
+                }
+            }).then(function(){
+                page++;
+            })
+        }
+    }
+</script>
+{/block}

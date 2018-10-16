@@ -1,0 +1,32 @@
+{extend name="base"/}
+{block name="title"}统计中心{/block}
+
+{block name="content"}
+<div class="wrap">
+  <div class="statistic_con">
+    <div class="statistic1">
+      <div class="title">员工统计</div>
+      <div class="con">
+        <p class="blue"><em></em>本月新增员工 <span>+{$current_mouth_worker}</span></p>
+        <p><em></em>员工总数 <span>{$worker_num}</span></p>
+      </div>
+    </div>
+    <div class="statistic2">
+      <div class="title">项目统计</div>
+      <div class="con">
+        <p class="blue"><em></em>进行中 <span>{$current_month_pro_wait_complete_num}</span></p>
+        <p><em></em>月完成 <span>{$current_month_pro_num}</span></p>
+        <p><em></em>总完成 <span>{$user_model['complete_pro_num']}</span></p>
+      </div>
+    </div>
+    <div class="statistic1">
+      <div class="title">积分统计</div>
+      <div class="con">
+        <p class="blue"><em></em>本月积分 <span>{$current_month_gold}</span></p>
+        <p><em></em>剩余积分 <span>{$user_model['gold']}</span></p>
+        <p><em></em>累计积分 <span>{$user_model['history_gold']}</span></p>
+      </div>
+    </div>
+  </div>
+</div>
+{/block}

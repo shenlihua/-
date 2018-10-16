@@ -1,0 +1,39 @@
+{extend name="base"/}
+{block name="title"}添加员工{/block}
+
+{block name="content"}
+<div class="wrap">
+  <div class="addWorker">
+    <div class="input"><input type="text" placeholder="搜索姓名"></div>
+    <div class="title">人员列表</div>
+    <ul class="people_list">
+      <li class="selected">
+        <span></span><img src="/static/images/img.png" alt=""><p class="name">张三墩</p>
+      </li>
+      <li>
+        <span></span><img src="/static/images/img.png" alt=""><p class="name">张三墩</p>
+      </li>
+      <li>
+        <span></span><img src="/static/images/img.png" alt=""><p class="name">张三墩</p>
+      </li>
+      <li>
+        <span></span><img src="/static/images/img.png" alt=""><p class="name">张三墩</p>
+      </li>
+    </ul>
+    <div class="sure_add">确认添加</div>
+  </div>
+</div>
+{/block}
+
+{block name="script"}
+<script>
+    $(function(){
+        $(".addWorker .people_list li").click(function(){
+            $(this).addClass('selected')
+        });
+        $(".sure_add").click(function(){
+            window.location.href="distribute_project.html"
+        })
+    })
+</script>
+{/block}

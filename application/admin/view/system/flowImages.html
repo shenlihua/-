@@ -1,0 +1,94 @@
+{extend name="base" /}
+{block name="title"}系统设置{/block}
+
+<!--导航栏-->
+{block name="slider_bar"}system-flow-images{/block}
+<!--面包屑-->
+{block name="breadcrumb"}
+<i class="ace-icon fa fa-home fa-users"></i>
+<li>系统设置</li>
+<li>图片管理</li>
+<li>轮播图列表</li>
+{/block}
+
+
+{block name="content"}
+<!-- div.table-responsive -->
+
+<!-- div.dataTables_borderWrap -->
+<div class="dataTables_wrapper form-inline no-footer">
+    <div class="row">
+        <div class="col-xs-6">
+            <a href="{:url('System/flowImagesAdd')}" class="btn btn-sm btn-primary" type="button">添加轮播图</a>
+        </div>
+        <div class="col-xs-5 text-right">
+
+        </div>
+        <div class="col-xs-1">
+
+        </div>
+    </div>
+    <table id="layer-photos-demo" class="table table-striped table-bordered table-hover">
+        <thead>
+        <tr>
+
+            <th width="40">序号</th>
+            <th width="120">标题</th>
+            <th width="120">轮播图</th>
+            <th width="120">更新时间</th>
+            <th width="80">状态</th>
+            <th width="200">操作</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        {volist name="list" id="vo"}
+        <tr>
+            <td>{$vo['id']}</td>
+            <td>{$vo['title']}</td>
+            <td><img src="{$vo['img']}" width="50" height="50" alt="{$vo['title']}"/></td>
+            <td>{$vo['update_time']}</td>
+            <td>{$vo::$fields_status[$vo['status']]}</td>
+            <td>
+                <a href="{:url('System/flowImagesAdd',array('id'=>$vo['id']))}">编辑</a>
+                <a href="javascript:;" data-id="{$vo['id']}" class="dataDel">删除</a>
+            </td>
+        </tr>
+        {/volist}
+        </tbody>
+    </table>
+    {$page|raw}
+</div>
+{/block}
+
+{block name="script"}
+<script>
+
+    $(function(){
+        //调用示例
+        layer.photos({
+            photos: '#layer-photos-demo'
+            ,anim: 5 //0-6的选择，指定弹出图片动画类型，默认随机（请注意，3.0之前的版本用shift参数）
+        });
+
+        $(".dataDel").click(function(){
+            var id = $(this).data('id');
+            var $this = $(this);
+            layer.confirm("是否删除该条数据",function(index){
+                $.post("{:url('System/locationDel')}",{id:id},function(result){
+                    layer.msg(result.msg);
+                    if(result.code==1){
+                        $this.parent().parent().remove()
+                    }
+                })
+            })
+        });
+        $("#submit").click(function(){
+            $.post($("#form").attr('action'),$("#form").serialize(),function(result){
+                //请求异常回调
+                layer.msg(result.msg)
+            })
+        })
+    })
+</script>
+{/block}

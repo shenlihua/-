@@ -1,0 +1,87 @@
+{extend name="base" /}
+
+<!--导航栏-->
+{block name="slider_bar"}money-index{/block}
+<!--面包屑-->
+{block name="breadcrumb"}
+<i class="ace-icon fa fa-home fa-users"></i>
+<li>用户管理</li>
+<li>用户列表</li>
+{/block}
+
+{block name="title"}用户列表{/block}
+
+{block name="content"}
+		<!-- div.table-responsive -->
+
+		<!-- div.dataTables_borderWrap -->
+		<div class="dataTables_wrapper form-inline no-footer">
+			<div class="row">
+				<div class="col-xs-6">
+				</div>
+				<div class="col-xs-5 text-right">
+					<form class="form-search">
+							<span class="input-icon align-middle">
+								<i class="ace-icon fa fa-search"></i>
+								<input type="text" class="search-query" name="keyword" value="{$keyword}" placeholder="单号">
+							</span>
+						<button class="btn btn-sm" type="submit">Go!</button>
+					</form>
+				</div>
+				<div class="col-xs-1">
+
+				</div>
+			</div>
+			<table id="dynamic-table" class="table table-striped table-bordered table-hover">
+				<thead>
+					<tr>
+
+						<th width="40">序号</th>
+						<th width="120">订单号</th>
+						<th width="120">用户名</th>
+						<th width="120">手机号码</th>
+						<th width="120">提现金额</th>
+						<th width="80">状态</th>
+						<th width="200">操作</th>
+					</tr>
+				</thead>
+
+				<tbody>
+					{volist name="list" id="vo"}
+						<tr>
+							<td>{$i}</td>
+							<td>{$vo['no']}</td>
+							<td>{$vo['link_users']['nickname']}</td>
+							<td>{$vo['link_users']['cellphone']}</td>
+							<td>{$vo['money']}</td>
+							<td>{$vo::$fields_status[$vo['status']]}</td>
+							<td>
+								<a class="opt-money" data-status="2" data-id="{$vo['id']}" href="###">发放</a>
+								<a class="opt-money" data-status="3" data-id="{$vo['id']}"  href="###">拒绝</a>
+							</td>
+						</tr>
+					{/volist}
+				</tbody>
+				</table>
+		</div>
+{$list|raw}
+		</div><!-- /.modal-content -->
+{/block}
+
+{block name="script"}
+<script>
+	$(".opt-money").click(function(){
+		var status = $(this).data('status')
+		var id = $(this).data('id')
+		var title = status==2?'确定发放金额?':'确定拒绝?';
+		layer.confirm(title,function(index){
+			$.post("{:url('optMoneyAction')}",{status:status,id:id},function(result){
+				layer.msg(result.msg);
+				if(result.code ==1){
+				    setTimeout(function(){window.location.reload()},1000)
+				}
+			})
+		})
+	})
+</script>
+{/block}

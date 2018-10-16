@@ -1,0 +1,327 @@
+
+<form class="form-horizontal" role="form" id="form" action="{:U('activityAddAction')}">
+  <input type="hidden" name="id" value="{$info['id']}" />
+
+  <div class="form-group">
+    <label class="col-sm-3 control-label no-padding-right" > 文章分类 </label>
+
+    <div class="col-sm-6">
+      <select class="form-control" name="cate_id">
+        <option value="">请选择</option>
+        <for start="1" end="count($fields_cate_type)">
+          <option value="{$i}" {:$info['cate_id']==$i?'selected':''}>{$fields_cate_type[$i]}</option>
+        </for>
+      </select>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label class="col-sm-3 control-label no-padding-right"> 活动标题 </label>
+
+    <div class="col-sm-9">
+      <input type="text"  placeholder="活动标题" name="title" value="{$info['title']}" class="col-lg-8"/>
+    </div>
+  </div>
+  <div class="form-group">
+    <label class="col-sm-3 control-label no-padding-right" > 主办单位 </label>
+
+    <div class="col-sm-9">
+      <input type="text" placeholder="主办单位" name="author"  value="{$info['author']}"    class="col-lg-6"/>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label class="col-sm-3 control-label no-padding-right" > 支持单位
+      <button class="btn btn-warning btn-xs add-sponsor" type="button" title="添加多个单位">
+        <i class="ace-icon glyphicon glyphicon-plus  bigger-50 icon-only "></i>
+      </button>
+    </label>
+
+    <div class="col-sm-9">
+      <if condition="info['sponsor']" >
+        <volist name="info['sponsor']" id="vo">
+          <label class="block">
+            <i class="ace-icon glyphicon glyphicon-minus  bigger-50 icon-only del-sponsor"></i>
+            <input type="text" placeholder="支持单位" name="sponsor[]"  value="{$vo}"/>
+          </label>
+        </volist>
+      <else/>
+        <label class="block">
+          <i class="ace-icon glyphicon glyphicon-minus  bigger-50 icon-only del-sponsor"></i>
+          <input type="text" placeholder="支持单位" name="sponsor[]"  />
+        </label>
+      </if>
+
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label class="col-sm-3 control-label no-padding-right" > 活动时间 </label>
+
+    <div class="col-sm-2">
+      <div class="input-group">
+        <input type="text"  placeholder="活动开始时间" class="activity_time form-control" name="activity_time" value="{:$info['activity_time'] ? date('Y-m-d',$info['activity_time']) : ''}" />
+        <span class="input-group-addon">
+            <i class="fa fa-calendar bigger-110"></i>
+        </span>
+      </div>
+    </div>
+    <div class="col-sm-2">
+      <div class="input-group">
+        <input type="text"  placeholder="活动结束时间" class="activity_time form-control" name="activity_end_time" value="{:$info['activity_end_time'] ? date('Y-m-d',$info['activity_end_time']) : ''}" />
+        <span class="input-group-addon">
+            <i class="fa fa-calendar bigger-110"></i>
+        </span>
+      </div>
+
+    </div>
+  </div>
+  <div class="form-group">
+    <label class="col-sm-3 control-label no-padding-right" > 活动地址 </label>
+
+    <div class="col-sm-9">
+      <input type="text" placeholder="活动地址" name="location"  value="{$info['location']}"    class="col-lg-6"/>
+    </div>
+  </div>
+
+
+  <div class="form-group ace-thumbnails">
+    <label class="col-sm-3 control-label no-padding-right" > 活动图片图 </label>
+
+    <div class="col-sm-1">
+          <button type="button" class="layui-btn" id="id-input-file">
+            <i class="layui-icon">&#xe67c;</i>上传图片
+          </button>
+    </div>
+    <div class="col-sm-8  ">
+
+
+      <ul class="ace-thumbnails clearfix widget-container-col">
+        <volist name="info['img']" id="vo">
+
+          <li class="widget-box">
+            <a href="{:generate_img_path($vo)}" data-rel="colorbox">
+              <img width="150" height="150" alt="150*150" src="{:generate_img_path($vo)}" />
+              <input type="hidden" name="img[]" value="{$vo}"/>
+            </a>
+
+            <div class="tools tools-top nav-search">
+
+              <a href="#" class="img-remove">
+                <i class="ace-icon fa fa-times red right"></i>
+              </a>
+            </div>
+          </li>
+        </volist>
+      </ul>
+
+
+    </div>
+  </div>
+  <div class="form-group">
+    <label class="col-sm-3 control-label no-padding-right" > 简介 </label>
+
+    <div class="col-sm-9">
+      <textarea class="form-control"  placeholder="文章简介" name="description">{$info['description']}</textarea>
+    </div>
+  </div>
+  <div class="form-group">
+    <label class="col-sm-3 control-label no-padding-right" > 状态 </label>
+
+    <div class="col-sm-9">
+      <input type="radio" name="status" value="1" id="status1" {:$info['status']?'checked':''}/><label for="status1">正常</label>
+      <input type="radio" name="status" value="0" id="status2" {:$info['status']?'':'checked'}/><label for="status2">禁用</label>
+    </div>
+  </div>
+  <div class="form-group">
+    <label class="col-sm-3 control-label no-padding-right" > 排序 </label>
+
+    <div class="col-sm-9">
+      <input type="number" name="sort" value="{:$info['sort']?$info['sort']:100}"/>
+    </div>
+  </div>
+
+
+  <div class="form-group">
+    <label class="col-sm-3 control-label no-padding-right" > 详情 </label>
+
+    <div class="col-sm-9">
+      <!-- 加载编辑器的容器 -->
+      <script id="container" name="content" type="text/plain">
+      {:htmlspecialchars_decode($info['content'])}
+      </script>
+
+      <div class="hr hr-double dotted"></div>
+
+    </div>
+  </div>
+
+
+  <div class="clearfix form-actions">
+    <div class="col-md-offset-3 col-md-9">
+      <button class="btn btn-info" type="button" id="submit">
+        <i class="ace-icon fa fa-check bigger-110"></i>
+        保存
+      </button>
+
+    </div>
+  </div>
+
+</form>
+
+<!-- 配置文件 -->
+<script type="text/javascript" src="__PUBLIC__/Ueditor/1.4.3/ueditor.config.js"></script>
+<!-- 编辑器源码文件 -->
+<script type="text/javascript" src="__PUBLIC__/Ueditor/1.4.3/ueditor.all.js"></script>
+
+
+
+<!-- page specific plugin scripts -->
+<script src="__PUBLIC__/Ace/js/jquery.colorbox.min.js"></script>
+<script src="__PUBLIC__/Ace/js/jquery-ui.custom.min.js"></script>
+<script src="__PUBLIC__/Ace/js/jquery.ui.touch-punch.min.js"></script>
+
+
+<!-- ace scripts -->
+
+<link rel="stylesheet" href="__PUBLIC__/Layui/css/layui.css" media="all">
+<script src="__PUBLIC__/Layui/layui.js"></script>
+
+
+
+<!-- inline scripts related to this page -->
+<script type="text/javascript">
+    var qn_info = {:W("DataHelper/getUploadInfo",array('news/activity'))};
+    var qn_domain = "{:W("DataHelper/getQnDomain")}";
+
+    var ue = UE.getEditor('container',{
+        toolbars: [
+            ['fullscreen', 'source', 'undo', 'redo','simpleupload','justifyleft', 'justifyright', 'justifycenter','justifyjustify' ],
+            ['bold', 'italic', 'underline', 'fontborder', 'strikethrough', 'superscript', 'subscript', 'removeformat', 'formatmatch', 'autotypeset', 'blockquote', 'pasteplain', '|', 'forecolor', 'backcolor', 'insertorderedlist', 'insertunorderedlist', 'selectall', 'cleardoc']
+        ]
+    });
+
+    var $overflow = '';
+    var colorbox_params = {
+        rel: 'colorbox',
+        reposition:true,
+        scalePhotos:true,
+        scrolling:false,
+        previous:'<i class="ace-icon fa fa-arrow-left"></i>',
+        next:'<i class="ace-icon fa fa-arrow-right"></i>',
+        close:'&times;',
+        current:'{current} of {total}',
+        maxWidth:'100%',
+        maxHeight:'100%',
+        onOpen:function(){
+            $overflow = document.body.style.overflow;
+            document.body.style.overflow = 'hidden';
+        },
+        onClosed:function(){
+            document.body.style.overflow = $overflow;
+        },
+        onComplete:function(){
+            $.colorbox.resize();
+        }
+    };
+
+
+
+    layui.use(['laydate','layer','upload'], function(){
+        var laydate = layui.laydate;
+        var upload = layui.upload;
+        var layer = layui.layer;
+
+        //执行一个laydate实例
+        laydate.render({
+            elem: '.activity_time' //指定元素
+        });
+        //执行实例
+        var uploadInst = upload.render({
+            elem: '#id-input-file' //绑定元素
+            ,url: qn_info.url //上传接口
+            ,data:{token:qn_info.token}
+            ,multiple: true
+            ,acceptMime: 'image/*'
+            ,before: function(obj){ //obj参数包含的信息，跟 choose回调完全一致，可参见上文。
+                layer.load(); //上传loading
+            }
+            ,done: function(res){
+                //上传完毕回调
+                layer.closeAll('loading'); //关闭loading
+                //获取当前触发上传的元素，一般用于 elem 绑定 class 的情况，注意：此乃 layui 2.1.0 新增
+                var item = this.item;
+                var html ='<li class="widget-box">' +
+                    '<a href="'+qn_domain+res.key+'" data-rel="colorbox" >' +
+                    '    <img width="150" height="150" alt="150*150" src="'+qn_domain+res.key+'" />' +
+                    '    <input type="hidden" name="img[]" value="'+res.key+'"/>' +
+                    '</a>' +
+                    '' +
+                    '<div class="tools tools-top nav-search">' +
+                    '' +
+                    '    <a href="#" class="img-remove">' +
+                    '        <i class="ace-icon fa fa-times red right"></i>' +
+                    '    </a>' +
+                    '</div>' +
+                    '  </li>';
+                $(item).parent().next().find('ul').append(html);
+                $('.ace-thumbnails [data-rel="colorbox"]').colorbox(colorbox_params);
+
+            }
+            ,error: function(){
+                //请求异常回调
+                layer.closeAll('loading'); //关闭loading
+                layer.msg('上传失败')
+            }
+        });
+    });
+
+    $(function(){
+
+    });
+
+    jQuery(function($){
+
+        // widget boxes
+        // widget box drag & drop example
+        $('.widget-container-col').sortable({
+            connectWith: '.widget-container-col',
+            items:'> .widget-box',
+            handle: ace.vars['touch'] ? '.widget-title' : false,
+            cancel: '.fullscreen',
+            opacity:0.8,
+            revert:true,
+            forceHelperSize:true,
+            placeholder: 'widget-placeholder',
+            forcePlaceholderSize:true,
+            tolerance:'pointer'
+
+        });
+
+        $('.ace-thumbnails [data-rel="colorbox"]').colorbox(colorbox_params);
+        //添加支持单位
+        $(".add-sponsor").click(function(){
+            var html = '<label class="block">\n' +
+                '        <i class="ace-icon glyphicon glyphicon-minus  bigger-50 icon-only del-sponsor"></i>\n' +
+                '        <input type="text" placeholder="支持单位" name="sponsor[]"/>\n' +
+                '      </label>';
+            $(this).parent().next().append(html);
+        });
+        //删除支持单位
+        $("#form").on('click','.del-sponsor',function(){
+
+            $(this).parent().remove();
+        });
+        $("#form").on('click','.img-remove',function(){
+            $(this).parents('li').remove()
+        });
+
+        //提交
+        $("#submit").click(function(){
+            $.post($("#form").attr('action'),$("#form").serialize(),function(result){
+                bootbox.dialog({ message: result.message })
+            })
+        })
+    });
+
+</script>

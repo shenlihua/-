@@ -1,0 +1,41 @@
+        <select class="select-user-type" name="tid">
+            <option value="">请选择账户类型</option>
+            {volist name="list" id="vo"}
+                <option value="{$vo['id']}" {:$vo['id']==$type?'selected':''}>{$vo['name']}</option>
+            {/volist}
+        </select>
+
+        {volist name="list" id="vo"}
+            {notempty name="vo['child_type']"}
+
+                <select id="user_type{$vo['id']}" class="user_type" style="display: none">
+                            <option value="">请选择{$vo['name']}对应类型</option>
+                            {volist name="vo['child_type']" id="ch"}
+                                <option value="{$ch['id']}" {:$ch['id']==$type?'selected':''}>{$ch['name']}</option>
+                            {/volist}
+                </select>
+            {/notempty}
+
+        {/volist}
+
+
+
+
+
+
+
+
+        <script>
+    (function ($) {
+
+        $(".select-user-type").change(function () {
+            //移除name属性
+            $(".user_type").hide();
+            $(".user_type").removeAttr('name');
+            var ch_id = $(".select-user-type").val();
+            $("#user_type"+ch_id).attr('name','tid');
+            $("#user_type"+ch_id).show();
+        })
+    })(jQuery);
+
+</script>

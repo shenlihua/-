@@ -1,0 +1,37 @@
+{__NOLAYOUT__}
+
+        <select class="select-location" name="province">
+            <option value="">请选择省</option>
+            {volist name="province_info" id="vo"}
+                <option value="{$vo['id']}" {:$vo['id']==$location_province_id?'selected':''}>{$vo['name']}</option>
+            {/volist}
+        </select>
+        <select  name="city">
+            {volist name="city_info" id="vo"}
+                <option value="{$vo['id']}" {:$vo['id']==$location_city_id?'selected':''}>{$vo['name']}</option>
+            {/volist}
+        </select>
+
+
+
+
+
+<script>
+    (function ($) {
+
+        //////////////////
+        $(".select-location").change(function () {
+            var id = $(this).val();
+            $.post("{:url('Index/location')}",{id:id},function (result) {
+                var data = result.data;
+                var html = '';
+                for(var i=0;i<data.length;i++){
+                    html +='<option value="'+data[i].id+'">'+data[i].name+'</option>';
+                }
+                $("select[name='city']").html(html)
+
+            })
+        })
+    })(jQuery);
+
+</script>

@@ -1,0 +1,129 @@
+{extend name="base" /}
+{block name="title"}系统设置{/block}
+
+<!--导航栏-->
+{block name="slider_bar"}system-flow-images{/block}
+<!--面包屑-->
+{block name="breadcrumb"}
+<i class="ace-icon fa fa-home fa-users"></i>
+<li>系统设置</li>
+<li>地区管理</li>
+<li>地区操作</li>
+{/block}
+
+
+{block name="content"}
+<form class="form-horizontal" role="form" id="form" action="{:url('flowImagesAddAction')}">
+    <input type="hidden" name="id" value="{$model['id']}">
+
+    <div class="row">
+
+
+
+        <div class="col-xs-12">
+
+
+            <div class="form-group">
+                <label class="col-sm-3 control-label no-padding-right" >标题</label>
+
+                <div class="col-sm-9">
+                    <input type="text"  placeholder="标题" class="col-xs-10 col-sm-5" name="title" value="{$model['title']}" maxlength="100"/>
+                </div>
+            </div>
+
+            <div class="form-group ace-thumbnails">
+                <label class="col-sm-3 control-label no-padding-right" > 封面图 </label>
+
+                <div class="col-sm-1">
+                    <button type="button" class="layui-btn" id="id-input-file">
+                        <i class="layui-icon">&#xe67c;</i>上传图片
+                    </button>
+                </div>
+                <div class="col-sm-2">
+                  <span class="profile-picture">
+                      <img width="150" height="150" alt="封面图" src="{:generate_img_path($model['img'])}">
+                      <input type="hidden" name="img" value="{$model['img']}"/>
+                  </span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-3 control-label no-padding-right" >排序</label>
+
+                <div class="col-sm-9">
+                    <input type="number"  placeholder="0" class="col-xs-10 col-sm-5" name="sort" value="{$model['sort']?$model['sort']:100}" />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-3 control-label no-padding-right" >状态</label>
+
+                <div class="col-sm-9">
+                    <div class="radio inline">
+                        <label>
+                            <input name="status" type="radio" class="ace" value="1" {:$model['status']!=2?'checked':''}>
+                            <span class="lbl"> 正常</span>
+                        </label>
+                    </div>
+                    <div class="radio inline">
+                        <label>
+                            <input name="status" type="radio" class="ace" value="2" {:$model['status']==2?'checked':''}>
+                            <span class="lbl"> 禁用</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="clearfix form-actions">
+                <div class="col-md-offset-3 col-md-9">
+                    <button class="btn btn-info" type="button" id="submit">
+                        <i class="ace-icon fa fa-check bigger-110"></i>
+                        保存
+                    </button>
+
+                </div>
+            </div>
+        </div>
+
+    </div><!-- /.row -->
+</form>
+
+    <script>
+
+
+        layui.use('upload', function(){
+            var upload = layui.upload;
+
+            //执行实例
+            var uploadInst = upload.render({
+                elem: '#id-input-file' //绑定元素
+                ,url: "{:url('Upload/upload')}" //上传接口
+                ,data:{type:'flow_image'}
+                ,acceptMime:'image/*'
+                ,done: function(res){
+                    //上传完毕回调
+                    //获取当前触发上传的元素，一般用于 elem 绑定 class 的情况，注意：此乃 layui 2.1.0 新增
+                    var item = this.item;
+                    $(item).parent().next().find('img').attr('src',res.path)
+                    $(item).parent().next().find('input[name="img"]').val(res.path)
+
+                }
+                ,error: function(){
+                    //请求异常回调
+                    layer.msg('图片上传异常');
+                }
+            });
+        });
+
+        $(function(){
+
+
+
+            $("#submit").click(function(){
+                $.post($("#form").attr('action'),$("#form").serialize(),function(result){
+                    //请求异常回调
+                    layer.msg(result.msg)
+                })
+            })
+        })
+    </script>
+{/block}

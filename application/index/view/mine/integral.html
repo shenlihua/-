@@ -1,0 +1,41 @@
+{extend name="base"/}
+{block name="title"}口碑王{/block}
+
+{block name="content"}
+<div class="jifen_con">
+  <div class="jifen_con">
+    <ul class="con1">
+      <li>本月积分 <span>{$current_month_gold}</span></li>
+      <li>总积分 <span>{$model['history_gold']}</span></li>
+    </ul>
+    <div class="con2">
+      <div class="title clearfix"><span class="span1"></span>积分记录 <a href="{:url('integralMore')}" class="span2">查看更多</a>
+        <ul>
+          <li>总积分</li>
+          <li class="li">本月积分</li>
+        </ul>
+      </div>
+      <div class="list">
+        {volist name="log_model" id="vo"}
+          <div class="div">
+            <p class="p1">订单编号：{$vo['param']->no}</p>
+            <p class="p1">日期时间：{:substr($vo['update_time'],0,10)}</p>
+            <em>{:$vo['gold']?'+'.$vo['gold']:'-'.$vo['gold']}</em>
+          </div>
+        {/volist}
+
+      </div>
+    </div>
+    <a href="{:url('money')}" class="out" style="display: block;">提现</a>
+  </div>
+  {include file="common/footer" footer_index="mine"/}
+</div>
+{/block}
+
+{block name="script"}
+<script>
+    $(function(){
+
+    })
+</script>
+{/block}

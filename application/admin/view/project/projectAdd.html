@@ -1,0 +1,213 @@
+{extend name="base" /}
+{block name="title"}项目管理{/block}
+
+<!--导航栏-->
+{block name="slider_bar"}project-index{/block}
+<!--面包屑-->
+{block name="breadcrumb"}
+<i class="ace-icon fa fa-home fa-users"></i>
+<li>项目管理</li>
+<li>操作项目</li>
+{/block}
+
+
+{block name="content"}
+<form class="form-horizontal" role="form" id="form" action="{:url('projectAddAction')}">
+  <input type="hidden" name="id" value="{$model['id']}" />
+  <div class="page-header">
+    <button class="btn btn-white btn-info btn-bold" type="button" id="submit">
+      <i class="ace-icon fa fa-floppy-o bigger-120 blue"></i>
+      保存
+    </button>
+  </div>
+  <!--左侧-->
+  <div class="col-xs-4">
+    <div class="form-group">
+      <label class="col-sm-3 control-label no-padding-right"> 项目名称 </label>
+
+      <div class="col-sm-9">
+        <input type="text" class="form-control"  placeholder="项目名称" name="title" value="{$model['title']}"/>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="col-sm-3 control-label no-padding-right"> 项目所在城市 </label>
+
+      <div class="col-sm-9">
+        {:widget('Page/chooseLocation',['city_id'=>(int)$model['city'],'province_id'=>(int)$model['province']])}
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="col-sm-3 control-label no-padding-right" > 项目人数 </label>
+
+      <div class="col-sm-9">
+        <input type="number"  class="form-control" placeholder="项目人数" name="number"  value="{$model['number']}"    />
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="col-sm-3 control-label no-padding-right" > 项目金 </label>
+
+      <div class="col-sm-9">
+        <input type="number"  class="form-control" placeholder="项目金" name="gold"  value="{$model['gold']}"  />
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="col-sm-3 control-label no-padding-right" > 项目地址 </label>
+
+      <div class="col-sm-9">
+        <input type="text" placeholder="项目地址" name="address"  value="{$model['address']}"    class="col-lg-6"/>
+        <input type="hidden" name="coordinate"  value="{:$model['coordinate']['lat']?($model['coordinate']['lat'].','.$model['coordinate']['lng']):''}"    class="col-lg-6"/>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="col-sm-3 control-label no-padding-right" > 状态 </label>
+
+      <div class="col-sm-9">
+        <input type="radio" name="status" value="1" id="status1" {:$model['status']!=2?'checked':''}/><label for="status1">正常</label>
+        <input type="radio" name="status" value="2" id="status2" {:$model['status']==2?'checked':''}/><label for="status2">禁用</label>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="col-sm-3 control-label no-padding-right" >
+        工作事项
+        <a style="cursor:pointer;" href="javascript:;" class="ui-sghref" id="add-work"><span class="ui-icon ace-icon fa fa-plus center bigger-110 blue"></span></a>
+      </label>
+
+      <div class="col-sm-9">
+        <input type="hidden" name="work_del" value="">
+        <div class="input-group input-group-sm" id="works">
+          {volist name="model['link_work']" id="vo"}
+          <span class="block input-icon input-icon-right">
+              <input type="text" name="work[]" class="width-100" value="{$vo['content']}">
+              <input type="hidden" name="work_id[]" value="{$vo['id']}"/>
+              <i class="ace-icon fa fa-times-circle red work-del" data-id="{$vo['id']}"></i>
+          </span>
+          {/volist}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!--右侧-->
+  <div class="col-xs-8">
+
+
+    <div class="form-group">
+      <label class="col-sm-3 control-label no-padding-right" > 简介 </label>
+
+      <div class="col-sm-9">
+        <textarea class="form-control"  placeholder="文章简介" name="intro" rows="5">{$model['intro']}</textarea>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="col-sm-3 control-label no-padding-right" > 备注 </label>
+
+      <div class="col-sm-9">
+        <textarea class="form-control"  placeholder="备注" name="remark" rows="4">{$model['remark']}</textarea>
+      </div>
+    </div>
+
+
+
+
+    <div class="form-group">
+      <label class="col-sm-3 control-label no-padding-right" >  </label>
+
+      <div class="col-sm-9">
+        <div id="allmap" style="height: 350px">
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+
+
+
+
+
+</form>
+{/block}
+
+{block name="script"}
+<!-- inline scripts related to this page -->
+<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak={:widget('Page/mapAK')}"></script>
+<script type="text/javascript">
+
+    var lat={$model['coordinate']['lat']?$model['coordinate']['lat']:0};
+    var lng={$model['coordinate']['lng']?$model['coordinate']['lng']:0};
+    // 百度地图API功能
+    var map = new BMap.Map("allmap");    // 创建Map实例
+    var point = new BMap.Point(114.073751,22.562341);
+    map.centerAndZoom(point, 11);  // 初始化地图,设置中心点坐标和地图级别
+    map.enableScrollWheelZoom(true);     //开启鼠标滚轮缩放
+    var local = new BMap.LocalSearch(map, {
+        renderOptions:{map: map}
+    });
+
+    //地图加载完成-设置了坐标移动位置
+    //移动指定位置
+    setTimeout(function(){
+        if(lng && lat){
+            var point = new BMap.Point(lng, lat);
+            var marker = new BMap.Marker(point);
+            map.addOverlay(marker);
+            //中心移动到指定位置
+            map.centerAndZoom(point, 11);
+            map.setZoom(16);
+        }
+    }, 1000);
+
+    //单击获取点击的经纬度
+    map.addEventListener("click",function(e){
+        $("input[name='coordinate']").val( e.point.lat+","+e.point.lng);
+        //移除覆盖物
+        map.clearOverlays();
+        var point = new BMap.Point(e.point.lng, e.point.lat);
+        var marker = new BMap.Marker(point);
+        map.addOverlay(marker);
+    });
+
+    $(function(){
+        $("#add-work").click(function(){
+            var html=' <span class="block input-icon input-icon-right">\n' +
+                '              <input type="text" name="work[]" class="width-100">\n' +
+                '              <i class="ace-icon fa fa-times-circle red"></i>\n' +
+                '          </span>';
+            $("#works").append(html)
+
+        });
+        //保存删除的数据
+        var work_del =[];
+        //删除工作内容
+        $(".work-del").click(function () {
+            var id = $(this).data('id');
+            !isNaN(id) && id > 0 && work_del.push(id);
+            $(this).parent().remove();
+            console.log(work_del)
+            $('#works').prev().val(work_del)
+        });
+
+        $("input[name='address']").change(function(){
+            var keyword = $(this).val();
+            if(keyword){
+                local.search(keyword);
+            }
+        });
+
+
+        //提交
+        $("#submit").click(function(){
+            $.post($("#form").attr('action'),$("#form").serialize(),function(result){
+                layer.msg(result.msg);
+            })
+        })
+    });
+
+</script>
+{/block}

@@ -1,0 +1,6 @@
+<div class="foot">
+    {assign name="footer_index" value="[footer_index]"/}
+    <a href="{:url('index/index')}" class="{:$footer_index=='index'?'active':''} a1">首页</a>
+    <a href="{:url('project/index')}" class="{:$footer_index=='project'?'active':''} a2">项目中心</a>
+    <a href="{:url('mine/index')}"  class="{:$footer_index=='mine'?'active':''} a3">我</a>
+</div>

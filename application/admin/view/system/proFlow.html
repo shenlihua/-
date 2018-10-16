@@ -1,0 +1,72 @@
+{extend name="base" /}
+{block name="title"}系统设置{/block}
+
+<!--导航栏-->
+{block name="slider_bar"}system-pro-flow{/block}
+<!--面包屑-->
+{block name="breadcrumb"}
+<i class="ace-icon fa fa-home fa-users"></i>
+<li>系统设置</li>
+<li>服务说明</li>
+<li>项目流程</li>
+{/block}
+
+
+{block name="content"}
+<div class="page-header">
+    <button class="btn btn-white btn-info btn-bold" type="button" id="submit">
+        <i class="ace-icon fa fa-floppy-o bigger-120 blue"></i>
+        保存
+    </button>
+</div>
+<form class="form-horizontal" role="form" id="form" action="{:url('System/sysCacheAction')}">
+    <input type="hidden" name="type" value="{$type}" />
+
+
+    <div class="form-group">
+
+        <div class="col-sm-9">
+            <!-- 加载编辑器的容器 -->
+            <script id="container" name="content" type="text/plain">{:htmlspecialchars_decode($content)}</script>
+
+            <div class="hr hr-double dotted"></div>
+
+        </div>
+    </div>
+
+
+
+
+</form>
+{/block}
+{block name="script"}
+<!-- 配置文件 -->
+<script type="text/javascript" src="/static/Ueditor/1.4.3/ueditor.config.js"></script>
+<!-- 编辑器源码文件 -->
+<script type="text/javascript" src="/static/Ueditor/1.4.3/ueditor.all.js"></script>
+
+
+
+
+<!-- inline scripts related to this page -->
+<script type="text/javascript">
+    var ue = UE.getEditor('container',{
+        initialFrameHeight:600,
+        toolbars: [
+            ['fullscreen', 'source', 'undo', 'redo','simpleupload','justifyleft', 'justifyright', 'justifycenter','justifyjustify' ],
+            ['bold', 'italic', 'underline', 'fontborder', 'strikethrough', 'superscript', 'subscript', 'removeformat', 'formatmatch', 'autotypeset', 'blockquote', 'pasteplain', '|', 'forecolor', 'backcolor', 'insertorderedlist', 'insertunorderedlist', 'selectall', 'cleardoc']
+        ]
+    });
+
+    $(function(){
+        //提交
+        $("#submit").click(function(){
+            $.post($("#form").attr('action'),$("#form").serialize(),function(result){
+                layer.msg(result.msg)
+            })
+        })
+    });
+
+
+</script>
+{/block}

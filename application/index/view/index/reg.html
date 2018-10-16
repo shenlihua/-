@@ -1,0 +1,105 @@
+{extend name="base"/}
+{block name="title"}口碑王{/block}
+
+{block name="content"}
+
+<div class="wrap">
+
+    <div class="reg_con">
+        <form action="{:url('regAction')}" id="form">
+            <div class="reg_1">
+                <div class="con">
+                    <span>选择城市</span>
+                    <select class="province_select select"  name="province" id="province">
+                        <option value="0">请选择</option>
+                        {volist name="location" id="vo"}
+                        <option   value="{$vo['id']}">{:$vo['name']}</option>
+                        {/volist}
+                    </select>
+                    <select name="city" id="city" class="select nmar">
+                        <option  value="0">请选择</option>
+                    </select>
+                </div>
+                <div class="con">
+                    <span>您的职位</span>
+                    <select name="tid">
+                        {volist name="choose_type" id="vo"}
+                            <option value="{$vo['id']}">{$vo['name']}</option>
+                        {/volist}
+                    </select>
+                </div>
+                <!--<div class="con">
+                    <span>选择工种</span>
+                    <select style="">
+                        <option value="">请选择</option>
+                        <option value="">搬运</option>
+                        <option value="">运输</option>
+                        <option value="">安装</option>
+                    </select>
+                </div>-->
+            </div>
+            <div class="reg_1">
+                <div class="con">
+                    <span>真实姓名</span>
+                    <input type="text" name="user_name"  maxlength="30">
+                </div>
+                <div class="con">
+                    <span>身份证号</span>
+                    <input type="text" name="user_card" maxlength="18" placeholder="请输入18位二代身份证号码">
+                </div>
+                <div class="con">
+                    <span>银行卡号</span>
+                    <input type="text" name="bank_card" maxlength="30" placeholder="银行卡号">
+                </div>
+                <div class="con">
+                    <span>开户行</span>
+                    <input type="text" name="bank_location" maxlength="50" placeholder="银行卡的开户行">
+                </div>
+                <div class="con">
+                    <span>手机号</span>
+                    <input type="text" name="cellphone" maxlength="11" placeholder="目前使用的手机号">
+                </div>
+            </div>
+        </form>
+        <div class="btn">
+            <!--<a href="">返回登录</a>-->
+            <a type="button" href="{:url('index/linkAccount')}" class="w-fl" style="background: #ccc">绑定账号</a>
+            <button type="button" id="submit" class="w-fr">提交注册</button>
+        </div>
+    </div>
+</div>
+
+{/block}
+
+{block name="script"}
+<script>
+    $(function(){
+        $("#province").change(function(){
+            var location_id = $(this).val();
+            var html ='';
+            if ( location_id > 0 ) {
+                $.post("{:url('location')}",{location_id:location_id},function(result){
+
+                    var data = result.data;
+                    for(var i=0;i<data.length;i++){
+                        html +='<option value="'+data[i].id+'">'+data[i].name+'</option>';
+                    }
+                    $('#city').empty().html(html);
+                })
+            } else {
+                $('#city').empty().html('<option value="0">请选择</option>');
+            }
+        })
+
+        $("#submit").click(function(){
+            $.post($("#form").attr('action'),$("#form").serialize(),function(result){
+                alert(result.msg)
+                if(result.code == 1) {
+                    window.location.href= "{:url('Index/index')}"
+                }
+            })
+        })
+    })
+
+</script>
+{/block}

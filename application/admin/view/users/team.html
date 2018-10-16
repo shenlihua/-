@@ -1,0 +1,134 @@
+{extend name="base" /}
+{block name="title"}首页{/block}
+{block name="slider_bar"}users-team{/block}
+<!--面包屑-->
+{block name="breadcrumb"}
+<i class="ace-icon fa fa-home fa-users"></i>
+<li>用户管理</li>
+<li>用户员工分配</li>
+{/block}
+
+
+{block name="content"}
+<div class="alert alert-info">
+    <button class="close" data-dismiss="alert">
+        <i class="ace-icon fa fa-times"></i>
+    </button>
+   请手动拖拽人员到对应项目经理栏框下
+</div>
+
+<div class="page-header">
+    <button class="btn btn-white btn-info btn-bold" type="button" id="submit">
+        <i class="ace-icon fa fa-floppy-o bigger-120 blue"></i>
+        保存
+    </button>
+</div>
+<div class="row">
+    <div class="col-sm-3">
+        <div class="widget-box widget-color-blue">
+            <div class="widget-header">
+                <h4 class="widget-title  smaller">
+                    未分配人员
+                </h4>
+            </div>
+
+            <div class="widget-body dd"   data-pro_id="0" data-list="{:count($not_specified)>0?implode(',',array_column($not_specified->toArray(),'id')):''}">
+                {if(count($not_specified)>0)}
+                    <ol class="dd-list" >
+                        {volist name="not_specified" id="vo"}
+                        <li class="dd-item" data-id="{$vo['id']}">
+                            <div class="dd-handle">{:$vo['user_name']?$vo['user_name']:$vo['nickname']}--{$vo['cellphone']}</div>
+                        </li>
+                        {/volist}
+
+                    </ol>
+                {else/}
+                    <div class="dd-empty"></div>
+                {/if}
+
+            </div>
+        </div>
+    </div>
+    {volist name="pro_model" id="vo"}
+    <div class="col-sm-3">
+        <div class="widget-box widget-color-blue">
+            <div class="widget-header">
+                <h4 class="widget-title  smaller">
+                    项目经理--{:$vo['user_name']?$vo['user_name']:$vo['nickname']}--{$vo['cellphone']}
+                </h4>
+                <div class="widget-toolbar">
+
+                    <a href="#" data-action="collapse">
+                        <i class="ace-icon fa fa-chevron-up"></i>
+                    </a>
+
+                </div>
+            </div>
+
+            <div class="widget-body dd" data-pro_id="{$vo['id']}" data-list="{:count($vo['link_pro_down_user'])>0?implode(',',array_column($vo['link_pro_down_user']->toArray(),'id')):''}">
+                    {if(count($vo['link_pro_down_user'])>0)}
+                    <ol class="dd-list" >
+                        {volist name="vo['link_pro_down_user']" id="users"}
+                        <li class="dd-item" data-id="{$users['id']}">
+                            <div class="dd-handle">{:$users['user_name']?$users['user_name']:$users['nickname']}--{$users['cellphone']}</div>
+                        </li>
+
+                        {/volist}
+                    </ol>
+                    {else/}
+                    <div class="dd-empty"></div>
+                    {/if}
+
+            </div>
+        </div>
+    </div>
+    {/volist}
+</div>
+{/block}
+
+{block name="script"}
+<script src="/static/Ace/js/jquery.nestable.min.js"></script>
+
+<script>
+    var change_data = {};
+    const CHANGE_DATA_PREFIX = 'change';
+    //只有一级
+    $('.dd').nestable({
+        maxDepth:1
+    });
+    $('.dd').on('change', function() {
+        var $this= $(this)
+        var pro_id= $this.data('pro_id');//组id
+        var list = $this.data('list')+',';
+        var reg = /[0-9]+,/;
+
+
+        $this.find('li').each(function(i){
+            var id = $(this).data('id');
+            if(list.indexOf(id)==-1){ //检测不到数据
+                change_data[id]=pro_id
+            }else if(change_data.hasOwnProperty(id)){
+                console.log(id)
+                delete change_data[id]
+            }
+        })
+
+        console.log(change_data)
+    });
+
+    $("#submit").click(function () {
+        //防止-提交数据更新异常-主动调整问题
+        if($.isEmptyObject(change_data)){
+            $('.dd').change()
+        }
+
+
+        layer.confirm('是否保存变更记录',function(){
+
+            $.post("{:url('teamAction')}",change_data,function (result) {
+                layer.msg(result.msg)
+            })
+        })
+    })
+</script>
+{/block}
