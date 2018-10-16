@@ -258,4 +258,15 @@ class Users extends BaseModel
 
     }
 
+    //退出团队
+    public function teamOut(self $user_model)
+    {
+
+        return $user_model->save([
+            'team_no' =>0,
+            'team_slice_no' => 0,
+            'is_auth' => 0,
+            'auth_time' => 0,
+        ]);
+    }
 }

@@ -200,7 +200,9 @@ class Mine extends Common
     //退出团队
     public function outTeam()
     {
-
+        $this->user_model->save([
+            'team_no' => 0,
+        ]);
     }
 //    public function testMsg()
 //    {
