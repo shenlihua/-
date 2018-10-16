@@ -24,8 +24,11 @@ class Users extends Common
             $where[] = ['type','<>','manage'];
             $where[] = ['team_no','=',$this->team_no];
         }elseif($this->type=='pro') { //项目经理
-            $where[] = ['type','<>','manage'];
+//            $where[] = ['type','<>','manage'];
             $where[] = ['team_slice_no','=',$this->user_id];
+            $where_fnc=function($query) {
+                $query->where('type', '<>', 'manage')->whereNull('type','OR');
+            };
         }else{ //管理员操作
 //            $where[] = ['id','=',0];
             $where_fnc=function($query) {
