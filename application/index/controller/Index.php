@@ -147,6 +147,43 @@ class Index extends Common
 
 
     }
+
+    //项目流程
+    public function proFlow()
+    {
+        $content = model('SysCache')->getContent('proFlow');
+        return view('proFlow',[
+            'content' => $content
+        ]);
+    }
+
+    //安全措施
+    public function proSecurity()
+    {
+        $content = model('SysCache')->getContent('proSecurity');
+        return view('proSecurity',[
+            'content' => $content
+        ]);
+    }
+
+    //QC检测
+    public function proCheck()
+    {
+        $content = model('SysCache')->getContent('proCheck');
+        return view('proCheck',[
+            'content' => $content
+        ]);
+    }
+
+    //设备维护
+    public function proMaintain()
+    {
+        $content = model('SysCache')->getContent('proMaintain');
+        return view('proMaintain',[
+            'content' => $content
+        ]);
+    }
+
     //生成二维码
     public function generateQr()
     {

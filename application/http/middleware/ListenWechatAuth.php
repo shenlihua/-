@@ -9,7 +9,7 @@ class ListenWechatAuth
     protected $no_check_action = 'index/wechat,index/reg,index/regAction,';
 
     //无需检验用户信息的动作
-    protected $no_check_user_info_action = 'index/linkAccount,index/linkAccountAction,index/location';
+    protected $no_check_user_info_action = 'index/linkAccount,index/linkAccountAction,index/location,index/proFlow,index/proSecurity,index/proCheck,index/proMaintain';
 
     public function handle($request, \Closure $next)
     {

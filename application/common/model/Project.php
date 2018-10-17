@@ -240,7 +240,7 @@ class Project extends BaseModel
             $join_where = 'p.id=w.pid';
 
         }else{//暂无数据
-            return ['code'=>1,'msg'=>'获取成功','data'=>''];
+            return;
         }
 
         $result = \think\Db::table($db_prefix.'project')

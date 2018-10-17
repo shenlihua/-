@@ -33,7 +33,7 @@ class BaseModel extends Model
     {
 
         $hashids = new \hashids\Hashids($this->generateSalt(), $this->hashids_length);
-        return $hashids->encode($value);
+        return $value?$hashids->encode($value):'';
     }
 
     /*

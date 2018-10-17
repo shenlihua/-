@@ -128,7 +128,6 @@ class Mine extends Common
         //进行中
         $current_month_pro_wait_complete_num = $project_model->getProInfo($this->user_model,[['status','=',3],['auth_time','>',$current_month]],'count');
 
-
         return view('statistics',[
             'user_model' => $this->user_model,
             'worker_num' => $worker_num,

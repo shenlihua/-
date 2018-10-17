@@ -6,23 +6,23 @@
     <div class="banner"><img src="/static/images/img1_1.jpg" class="w-fw" alt=""></div>
     <ul class="link">
         <li>
-            <a href=""><img src="/static/images/img1_2.jpg" class="w-fw" alt="">项目流程</a>
+            <a href="{:url('proFlow')}"><img src="/static/images/img1_2.jpg" class="w-fw" alt="">项目流程</a>
         </li>
         <li>
-            <a href=""><img src="/static/images/img1_3.jpg" class="w-fw" alt="">安全措施</a>
+            <a href="{:url('proSecurity')}"><img src="/static/images/img1_3.jpg" class="w-fw" alt="">安全措施</a>
         </li>
         <li>
-            <a href=""><img src="/static/images/img1_4.jpg" class="w-fw" alt="">QC检查</a>
+            <a href="{:url('proCheck')}"><img src="/static/images/img1_4.jpg" class="w-fw" alt="">QC检查</a>
         </li>
         <li>
-            <a href=""><img src="/static/images/img1_5.jpg" class="w-fw" alt="">设备维修</a>
+            <a href="{:url('proMaintain')}"><img src="/static/images/img1_5.jpg" class="w-fw" alt="">设备维修</a>
         </li>
     </ul>
     <div class="index_con">
         <div class="title">通知公告 <span>全部</span></div>
         {volist name="notice_list" id="vo"}
             <div class="con">
-                <div class="div"><a href="{:url($vo::$fields_type[$vo['type']]['uri'],$vo['param'])}">{$vo['title']}</a></div>
+                <div class="div"><a href="{:$vo::$fields_type[$vo['type']]['uri']?url($vo::$fields_type[$vo['type']]['uri'],$vo['param']):'javascript:;'}">{$vo['title']}</a></div>
                 <p>{$vo['intro']}</p>
             </div>
         {/volist}
