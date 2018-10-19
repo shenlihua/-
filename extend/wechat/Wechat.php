@@ -67,5 +67,25 @@ class Wechat
         return json_decode($result,true);
     }
 
+    //获取js-jssdk--jsapi_ticket
+    public static function getJsapiTicket()
+    {
+        $cache_name = 'wechat_jsapi_ticket';
+        $jsapi_ticket = cache($cache_name);
+        if(!$jsapi_ticket){
+
+            $access_token = self::getGlobalAccessToken();
+            $uri = self::DOMAIN.'/cgi-bin/ticket/getticket?access_token='.$access_token.'&type=jsapi';
+            $result = file_get_contents($uri);
+            $result = json_decode($result,true);
+            $jsapi_ticket = $result['ticket'];
+            if(!$result['errcode']) { //获取成功
+                cache($cache_name, $jsapi_ticket, 6000);
+            }  else{
+                abort(200,'获取异常code'.$result['errcode'].'  msg:'.$result['errmsg']);
+            }
+        }
+        return $jsapi_ticket;
+    }
 
 }

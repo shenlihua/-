@@ -197,4 +197,31 @@ class Index extends Common
 //        $response = new Response($qrCode->writeString(), Response::HTTP_OK, ['Content-Type' => $qrCode->getContentType()]);
 
     }
+
+    //微信端签名
+    public function jsSignature()
+    {
+        $req_url = $_SERVER['HTTP_REFERER'];
+        $req_url_arr = explode('#',$req_url);
+        $req_url = $req_url_arr[0];
+        //调试微信信息
+        $jsapi_ticket = \wechat\Wechat::getJsapiTicket();
+        $data = [
+            'noncestr' => md5(time().'noncestr'),
+            'jsapi_ticket' => $jsapi_ticket,
+            'timestamp' =>time(),
+            'url' => $req_url,
+        ];
+        ksort($data);
+        $str ='';
+        foreach($data as $key=>$vo) {
+            $str .=$key.'='.$vo.'&';
+        }
+        $str = substr($str,0,-1);
+        $data['appId'] = \wechat\Config::$appID;
+        $data['signature']  = sha1($str);
+
+        unset($data['jsapi_ticket']);
+        return ['code'=>1,'msg'=>'获取成功','data'=>$data];
+    }
 }

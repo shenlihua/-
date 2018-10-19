@@ -18,8 +18,26 @@
       <p class="p">项 目 组 : {:$model['type']=='pro'?$model['id']:$model['team_slice_no']}</p>
       {/if}
     </div>
-    <a href="" id="share">分享</a>
+    <a href="javascript:;" id="share" data-style="updateAppMessageShareData">分享</a>
   </div>
   {include file="common/footer" footer_index="mine"/}
 </div>
+{/block}
+{block name="script"}
+<script src="http://res.wx.qq.com/open/js/jweixin-1.4.0.js"></script>
+<script src="/static/js/wechat.js"></script>
+<script>
+    //分享信息
+    wechatBox.shareInfo = function ( ) {
+        return {
+            "title": '邀请用户',
+            "link" : "{:url('Index/index',['req_id'=>$model->encodeReqCode($model['id'])],false,true)}",
+            'imgUrl': "{:request()->root(true)}/static/images/img.png",
+        }
+    }
+    //分享回调
+    wechatBox.shareCallback = function (res) {
+        alert(res)
+    }
+</script>
 {/block}
